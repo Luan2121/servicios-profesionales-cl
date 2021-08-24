@@ -1,6 +1,28 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "baseUrl": ".",
+    "module": "esnext",
+    "noImplicitAny": false,
+    "paths": {
+      "@assets/*": ["./src/assets/*"],
+      "@assets": ["./src/assets/index"],
+      "@context/*": ["./src/context/*"],
+      "@context": ["./src/context/index"],
+      "@theme/*": ["./src/theme/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@navigators/*": ["./src/navigators/*"],
+      "@copy": ["./src/copy"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@hooks": ["./src/hooks/index"],
+      "@components/*": ["./src/components/*"],
+      "@env": [".env"],
+      "@api": ["./src/api"],
+      "@types/*": ["./src/types/*"],
+      "@types": ["./src/types/index"],
+      "@utils/*": ["./src/utils/*"],
+      "@utils": ["./src/utils/index"]
+    }
+  },
 }

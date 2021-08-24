@@ -1,0 +1,29 @@
+{
+    "extends": [
+        "eslint:recommended", 
+        "prettier",
+        "plugin:react/recommended"
+    ],
+    "plugins": ["prettier"],
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 2020
+    },
+    "env": {
+        "amd": true,
+        "node": true
+    },
+    "rules": {
+        "linebreak-style": "off",
+        "semi": ["error", "always"],
+    },
+    "globals": {
+        "document": true,
+        "alert": true
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    }
+}
