@@ -52,16 +52,21 @@ const CalendarPicker = ( {
             />
             { showTime && (
                 <TimePicker
-                    value = {hour}
+                    value = {date?.toISOString() || ""}
                     ampm = {ampm}
                     onChange = {( currentHour, currentAmpm ) => {
                         if(date){
-                            const [ hour, minutes ] = currentHour.split(":");
-                            const newHours   = currentAmpm === "AM" ? parseInt(hour) : parseInt(hour) + 12;
-                            const newMinutes = parseInt( minutes );
+                            const dateFromTimePicker = dayjs(currentHour);
+                            let hour = dateFromTimePicker.hour();
+                            if( hour > 12 && currentAmpm === 'AM' ){
+                                hour = hour - 12;
+                            }
+                            else if ( hour <= 12 && currentAmpm === 'PM' ){
+                                hour = hour + 12;
+                            }
                             const newDate = dayjs( date )
-                                .hour( newHours )
-                                .minute( newMinutes );
+                                .hour( hour )
+                                .minute( dateFromTimePicker.minute() );
                             onChange(newDate);
                             setDate( newDate );
                         };

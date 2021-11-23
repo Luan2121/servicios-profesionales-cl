@@ -12,6 +12,8 @@ const lightTheme : ThemeConfig = {
         // semantic colors
         warning: '#976A02',
         warningLight: '#FCF5CB',
+        success: '#176A11',
+        successLight: '#C1F1A3',
         // specials colors
         avatar: '#6C85FF'
     },

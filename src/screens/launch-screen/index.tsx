@@ -7,6 +7,7 @@ import { useTheme } from 'bumbag';
 import { Assets } from '@assets';
 import { COPY } from "@copy";
 import { atom, useAtom } from 'jotai';
+import { useAuth } from '@hooks/use-auth';
 
 export const userTypeAtom = atom<'client' | 'technician' | undefined>(undefined);
 
@@ -22,6 +23,7 @@ type Props = {
 const LaunchScreen = ({ navigation } : Props ) => {
     const { theme } = useTheme();
     const [ userType, setUserType ] = useAtom(userTypeAtom);
+    const { loginAsGuest } = useAuth();
     return (
         <Fragment>
             <StatusBar backgroundColor={theme.palette.secondary} />
@@ -87,6 +89,20 @@ const LaunchScreen = ({ navigation } : Props ) => {
                                     </Button.Text>
                                 </Button>
                             </Group>
+                            <Text style = {{
+                                color: theme.palette.muted,
+                                fontSize: 14,
+                                textAlign: 'center'
+                            }}>
+                                o
+                            </Text>
+                            <Button variant = "ghost" onPress = {() => {
+                                loginAsGuest();
+                            }}>
+                                <Button.Text>
+                                    Entrar como invitado
+                                </Button.Text>
+                            </Button>
                         </View>
                     </ImageBackground>
                 </ImageBackground>

@@ -5,8 +5,12 @@ import {
     Service, 
     Direction, 
     Message,
-    OrderItem
+    OrderItem,
+    OrderDetail,
+    HistoryItem
 } from "@types";
+import dayjs from "dayjs";
+
 
 const createCitiesFromResponse = (data : any) : City[] => {
     if( Array.isArray(data) ){
@@ -87,6 +91,97 @@ const createOrdersFromResponse = data => {
     return [];
 }
 
+const getActionType = (action : string) : [ HistoryItem['actionType'] , HistoryItem['actionIcon'] ] => {
+
+    if( action.includes("Modificacion") ){
+        return [ 'Modificacion', { provider: 'Feather', icon: 'edit' } ];
+    }
+
+    if( action.includes("Asigna Tecnico") ){
+        return [ 'Asignacion Tecnico', { provider: 'AntDesign', icon: 'adduser' } ]
+    }
+
+    if( action.includes("Ingreso OT") ){
+        return [ 'Creacion', { provider: 'Feather', icon: 'clock' } ];
+    }
+
+    return [ 'Default', { provider: 'MaterialCommunityIcons', icon: 'information-outline' } ];
+}
+
+const createOrderDetailFromResponse = ( data ) : OrderDetail | null => {
+    if(data){
+        const [ techinician , status, history ] = data.arr_audi.reduce( ( [t, s, hist] , h) => {
+            if( h.accion.includes("Asigna Tecnico") ){
+                const theTechnician = h.accion.split(" ")?.[2];
+                t = theTechnician;
+            }
+            const [ actionType, actionIcon ] = getActionType(h.accion);
+            const historyItem : HistoryItem = {
+                user: ( h.usuario || "" ) as string,
+                site: h.lugar,
+                date: dayjs(h.fechahora).isValid() ? dayjs(h.fechahora).toISOString() : "",
+                action: h.accion,
+                actionType,
+                actionIcon
+            };
+            const newHist = [...hist,historyItem];
+            return [ t , s , newHist ];
+        } , [ "" , "En proceso", [] ] );
+        return ({
+            id: data.arr_ot.idot,
+            budget: data.arr_press?.length ? "#123456" : "",
+            description: data.arr_ot.observacion,
+            technicianId: techinician,
+            status,
+            client: "",
+            address: "",
+            service: "",
+            specialty: "",
+            hour: "",
+            manager: "",
+            history
+        } as OrderDetail)
+    }
+    return null;
+}
+
+const createTechnicianOrderDetailFromResponse = (data) : OrderDetail | null => {
+    if(data){
+        const [ techinician , status, history ] = ( data.arr_audi || [] ).reduce( ( [t, s, hist] , h) => {
+            if( h.accion.includes("Asigna Tecnico") ){
+                const theTechnician = h.accion.split(" ")?.[2];
+                t = theTechnician;
+            }
+            const [ actionType, actionIcon ] = getActionType(h.accion);
+            const historyItem : HistoryItem = {
+                user: ( h.usuario || "" ) as string,
+                site: h.lugar,
+                date: dayjs(h.fechahora).isValid() ? dayjs(h.fechahora).toISOString() : "",
+                action: h.accion,
+                actionType,
+                actionIcon
+            };
+            const newHist = [...hist,historyItem];
+            return [ t , s , newHist ];
+        } , [ "" , "En proceso", [] ] );
+        return ({
+            id: data.arr_ot.id,
+            budget: data.arr_press?.length ? "#123456" : "",
+            description: data.arr_ot.nota,
+            technicianId: techinician,
+            status,
+            history,
+            client: data.arr_ot.cliente,
+            address: data.arr_ot.direccion,
+            service: data.arr_ot.rubro,
+            specialty: data.arr_ot.especialidad,
+            hour: data.arr_ot.hora,
+            manager: data.arr_ot.encargado,
+        } as OrderDetail)
+    }
+    return null;
+}
+
 const rubNameForImageAsset = {
     gasfiteria: Assets.images.gasfiter,
     electricidad: Assets.images.electricity,
@@ -104,5 +199,7 @@ export {
     createServiceFromResponse,
     createDirectionsFromResponse,
     createMessagesFromResponse,
-    createOrdersFromResponse
+    createOrdersFromResponse,
+    createOrderDetailFromResponse,
+    createTechnicianOrderDetailFromResponse
 }

@@ -48,7 +48,7 @@ const LoginScreen = ({ navigation } : Props ) => {
                 initialValues = { formInitialValues }
                 validationSchema = { formValidation }
                 onSubmit = {(values) => {
-                    run( auth.login({...values,userType}) );
+                    run( auth.loginWithEmail({...values,userType}) );
                 }}
             >
                 {({ handleSubmit, isValid }) => (
@@ -82,7 +82,7 @@ const LoginScreen = ({ navigation } : Props ) => {
                                     justifyContent: 'space-between'
                                 }}>
                                     <Stack spacing="xlarge">
-                                        <TextField name = "rut" size = "medium" placeholder = "Rut"/>
+                                        <TextField name = "email" size = "medium" placeholder = "Correo electronico"/>
                                         <TextField secureTextEntry = {true} name = "password" size = "medium" placeholder = "Contraseña" />
                                     </Stack>
                                     <Stack spacing = "xlarge">

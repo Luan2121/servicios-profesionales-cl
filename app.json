@@ -18,7 +18,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.luan2121.serviciosprofesionalescl"
+      "bundleIdentifier": "com.servicios-profesionales"
     },
     "android": {
       "adaptiveIcon": {
@@ -38,7 +38,7 @@
           "apiKey": "AIzaSyAkQXpukXTieZJnQxiiG2HTcyiBDe42GY8"
         }
       },
-      "package": "com.luan2121.serviciosprofesionalescl"
+      "package": "com.serviciosprofesionales.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"

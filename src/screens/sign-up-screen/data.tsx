@@ -10,6 +10,7 @@ export type FormType = {
     phone: string,
     comuna: undefined | Comuna,
     giro: string;
+    id?: string;
 }
 
 const formInitialValues : FormType = {
@@ -25,13 +26,8 @@ const formInitialValues : FormType = {
 };
 
 const formValidation = Yup.object().shape({
-    rut: Yup.string().required("Campo obligatorio"),
     email: Yup.string().email("Introduzca un email valido").required("Campo obligatorio"),
     password: Yup.string().required("Campo obligatorio"),
-    city: Yup.object().shape({
-        id: Yup.string().required()
-    }).required("Seleccione una ciudad"),
-    phone: Yup.string().required("Campo obligatorio")
 });
 
 export { formInitialValues, formValidation };

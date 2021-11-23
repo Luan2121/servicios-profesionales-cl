@@ -45,19 +45,19 @@ const useMutateDirection = () => {
                 }
             }
         }), {
-            onSuccess: (data,variables) => {
+            onSuccess: async (data,variables) => {
+                const directions = await client("",{
+                    method: 'POST',
+                    data: {
+                        "op":"getDirecciones",
+                        "rut": variables.rut
+                    }
+                }).then( response => {
+                    const directions = createDirectionsFromResponse(response);
+                    return directions as Direction[];
+                })
                 queryClient.setQueryData<Direction[]>( 'directions', (oldDirs) => {
-                    client("",{
-                        method: 'POST',
-                        data: {
-                            "op":"getDirecciones",
-	    	                "rut": variables.rut
-                        }
-                    }).then( response => {
-                        const directions = createDirectionsFromResponse(response);
-                        return directions as Direction[];
-                    })
-                    return [];
+                    return directions;
                 });
             }
         }

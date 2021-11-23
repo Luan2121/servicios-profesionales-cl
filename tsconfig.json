@@ -22,7 +22,9 @@
       "@types/*": ["./src/types/*"],
       "@types": ["./src/types/index"],
       "@utils/*": ["./src/utils/*"],
-      "@utils": ["./src/utils/index"]
+      "@utils": ["./src/utils/index"],
+      "@tasks/*": ["./src/tasks/*"],
+      "@tasks": ["./src/tasks/index"]
     }
   },
 }

@@ -11,6 +11,8 @@ export interface ClientConfig extends AxiosRequestConfig {
     token ?: string
 }   
 
+type TClientFunction = ( endpoint: string , config: ClientConfig  ) => Promise<any>
+
 const client = (
     endpoint : string, 
     { data , token, headers : customHeaders, ...customConfig } : ClientConfig
@@ -36,4 +38,6 @@ const client = (
     })
 }
 
-export { client }
+
+
+export { client, TClientFunction }

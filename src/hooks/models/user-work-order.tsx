@@ -30,7 +30,7 @@ const useCreateWorkOrder = () => {
         } : useCreateWorkOrderParams) => client("",{
             method: 'POST',
             data: {
-                "op":"actualizarDatos",
+                "op":"ingresarOtnew",
                 "nombre": user?.username,
                 "rut": user?.rut,
                 "dv": user?.dv,

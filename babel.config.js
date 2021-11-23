@@ -21,7 +21,8 @@ module.exports = function(api) {
             "@scenes": "./src/scenes",
             "@utils": "./src/utils",
             "@navigators": "./src/navigators",
-            "@screens": "./src/screens"
+            "@screens": "./src/screens",
+            "@tasks": "./src/tasks"
           },
         },
       ],
@@ -35,7 +36,8 @@ module.exports = function(api) {
           "safe": false,
           "allowUndefined": true
         }
-      ]
+      ],
+      'react-native-reanimated/plugin'
     ]
   };
 };

@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { StatusBar, View, ScrollView, FlatList, Text } from 'react-native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { ClientNavigatorTab } from '@navigators/client-navigator/client-navigator';
+import { OrderNavigatorParamList } from '@navigators/orders-navigator/orders-navigator';
 import { Header } from '@components/header/header';
 import { useAuth } from '@hooks/use-auth';
 import { useOrders } from '@hooks/models/use-orders';
@@ -10,14 +10,15 @@ import { useTheme } from 'bumbag';
 import { OrderItem as TOrderItem } from '@types';
 import { EvilIcons } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { LoaderManager } from '@components/loader-manager/loader-manager';
 
-type AccountScreenNavigationProp = BottomTabNavigationProp<
-    ClientNavigatorTab,
-    'orders'
+type OrderScreenNavigationProp = BottomTabNavigationProp<
+    OrderNavigatorParamList,
+    'root'
 >
 
 type Props = {
-    navigation : AccountScreenNavigationProp 
+    navigation : OrderScreenNavigationProp 
 }
 
 
@@ -26,10 +27,7 @@ const OrderScreen = ({
 } : Props) => {
     const { theme } = useTheme();
     const { user } = useAuth();
-    const { data : orders } = useOrders(user); 
-
-    console.log(orders);
-
+    const { data : orders , isLoading } = useOrders(user); 
     return (
         <Fragment>
             <StatusBar/>
@@ -38,29 +36,32 @@ const OrderScreen = ({
                 variant = "stack"
                 navigation = {navigation}
             />
-            <ScrollView style = {{
-                flex: 1
-            }} >
-                <FlatList
-                    data = {orders}
-                    renderItem = {({ item }) => (
-                        <View style = {{
-                            marginBottom: theme.spacing.small
-                        }}>
-                            <OrderItem item = {item} />
-                        </View>
-                    )}
-                />
-            </ScrollView>
+            <LoaderManager isLoading = {isLoading} >
+                <ScrollView style = {{
+                    flex: 1
+                }} >
+                    <FlatList
+                        data = {orders}
+                        renderItem = {({ item }) => (
+                            <View style = {{
+                                marginBottom: theme.spacing.small
+                            }}>
+                                <OrderItem item = {item} navigation = {navigation} />
+                            </View>
+                        )}
+                    />
+                </ScrollView>
+            </LoaderManager>
         </Fragment>
     )
 }
 
 type OrderItemProps = {
-    item: TOrderItem
+    item: TOrderItem,
+    navigation: OrderScreenNavigationProp
 };
 
-const OrderItem = ({ item } : OrderItemProps) => {
+const OrderItem = ({ item, navigation } : OrderItemProps) => {
     const { theme } = useTheme();
     return (
         <TouchableWithoutFeedback>
@@ -73,7 +74,9 @@ const OrderItem = ({ item } : OrderItemProps) => {
                 <Text>
                     {item.name}
                 </Text>
-                <Button>
+                <Button onPress = {() => {
+                    navigation.navigate("order-detail", { order: item })
+                }}>
                     <EvilIcons name="pencil" size={24} color="black" />
                 </Button>
             </View>

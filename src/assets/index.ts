@@ -1,5 +1,7 @@
 import ErrorIcon from './icons/error';
 import SuccessIcon from './icons/success';
+import ManualPaymentIcon from './icons/manual-payment';
+import OnlinePaymentIcon from './icons/online-payment';
 
 const Assets = {
     images: {
@@ -20,7 +22,9 @@ const Assets = {
     },
     icons: {
         error: ErrorIcon,
-        success: SuccessIcon
+        success: SuccessIcon,
+        manualPayment: ManualPaymentIcon,
+        onlinePaymentIcon: OnlinePaymentIcon
     }
 };
 

@@ -6,13 +6,17 @@ export type OrderNavigatorParamList = {
     'root' : any,
     'order-detail': {
         order: OrderItem
+    },
+    'mutate-report-screen': {
+        order: OrderItem
     }
 }
 
 const Stack = createStackNavigator<OrderNavigatorParamList>();
 // Screens
-const OrderScreen = lazy( () => import("@screens/orders`-screen/index") );
+const OrderScreen = lazy( () => import("@screens/orders-screen") );
 const OrderDetailScreen = lazy( () => import("@screens/order-details") );
+const MutateReportScreen = lazy( () => import("@screens/mutate-report-screen") );
 
 const OrderNavigator = () => {
     return (
@@ -26,6 +30,10 @@ const OrderNavigator = () => {
                     name = "order-detail"
                     component = {OrderDetailScreen}
                 />   
+                <Stack.Screen
+                    name = "mutate-report-screen"
+                    component = {MutateReportScreen}
+                />
             </Stack.Navigator>
         </Suspense>
     );

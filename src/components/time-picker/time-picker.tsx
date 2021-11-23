@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, FlatList, NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import { View, Text, Platform, FlatList, NativeSyntheticEvent, NativeScrollEvent, TouchableWithoutFeedback } from 'react-native';
 import { useTheme } from 'bumbag';
 import { Group, Button } from 'bumbag-native';
 import dayjs from 'dayjs';
 import SmoothPicker from "react-native-smooth-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useMemo, memo, useCallback } from 'react';
 
 type TimePickerProps = {
     value: string,
@@ -33,22 +35,22 @@ const TimePicker = ({
     onChange
 } : TimePickerProps ) => {
     const { theme } = useTheme();
-    const [ selected , setSelected ] = useState(0);
-    const [ ampm, setAmpm ] = useState(ampmProp);
-    const [ hour, setHour ] = useState(value);
-    const listRef = useRef<FlatList>(null);
-    const handleScroll = (event : NativeSyntheticEvent<NativeScrollEvent>) => {
-        const { contentOffset, contentSize } = event.nativeEvent;
-        const snapRange = 0.5;
-        const len = times.length;
-        const boxSize = contentSize.height / len;
-        const { y } = contentOffset;
-        const currentPosition = Math.floor( (y + boxSize * snapRange) / boxSize );
-        setSelected(currentPosition);
-        setHour( times[currentPosition] );
-        onChange( times[currentPosition] , ampm );
-    }
-
+    const initialDate = useMemo( () => dayjs().hour(12).minute(0) , [] );
+    const [state,setState] = useState({
+        date: initialDate,
+        ampm: ampmProp
+    })
+    const { date , ampm } = state;
+    //const [date, setDate] = useState( initialDate );
+    const [show, setShow] = useState(false);
+    const handleChange = useCallback( (event,selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(Platform.OS === 'ios');
+        const d = dayjs(currentDate);
+        const newampm = dayjs(currentDate).format("a").includes("am") ? "AM" : "PM";
+        setState( s => ({ ...s, date: d, ampm: newampm }) );
+        onChange( d.toISOString(), newampm );
+    } , [setState, setShow ] );
     return (
         <View style = {{
             flexDirection: 'row',
@@ -63,66 +65,65 @@ const TimePicker = ({
             }}>
                 Hora
             </Text>
-            <View>
-                <SmoothPicker
-                    style = {{
+            <View style = {{
+                flex: 1,
+                flexGrow: 1,
+                justifyContent: 'center',
+                width: '100%',
+                flexDirection: 'row'
+            }}>
+                <TouchableWithoutFeedback onPress = { () => {
+                    setShow(true);
+                }}>
+                    <View style = {{
                         backgroundColor: '#E5E5E5',
                         width: 80,
                         borderRadius: 16,
                         height: 50,
-                        flex: 1,
-                        flexGrow: 1
-                    }}
-                    data = {times}
-                    magnet = {true}
-                    initialScrollIndex = {0}
-                    scrollEnabled = {true}
-                    nestedScrollEnabled = {true}
-                    showsVerticalScrollIndicator = {false}
-                    scrollAnimation
-                    offsetSelection = {-20}
-                    onSelected = {(data) => {
-                        setHour(data.item);
-                        onChange(data.item,ampm);
-                    }}
-                    renderItem = {({ item }) => (
-                        <View style = {{
-                            width: 80,
-                            height: 50,
-                            justifyContent: 'center'
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}> 
+                        <Text style = {{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: theme.palette.primary
                         }}>
-                            <Text style = {{
-                                fontSize: 18,
-                                paddingTop: 70,
-                                color: theme.palette.primary,
-                                textAlign: 'center'
-                            }}>
-                                {item}
-                            </Text>
-                        </View>
-                    )}
-                />
+                            { dayjs(date).format("hh:mm") }
+                        </Text>
+                    </View>
+                </TouchableWithoutFeedback>
             </View>
             <Group>
                 <Button onPress = {() => {
-                    setAmpm("AM");
-                    onChange(hour,"AM");
+                    setState( s => ({ ...s , ampm: "AM" }));
+                    onChange(state.date.toISOString(),"AM");
                 }} palette = { ampm === "AM" ? "primary" : "default" }>
                     <Button.Text color = { ampm === "AM" ? "body" : "primary" }>
                         AM
                     </Button.Text>
                 </Button>
                 <Button palette = { ampm === "PM" ? "primary" : "default" } onPress = {() => {
-                    setAmpm("PM");
-                    onChange(hour,"PM")
+                    setState( s => ({ ...s , ampm: "PM" }));
+                    onChange(state.date.toISOString(),"PM");
                 }} >
                     <Button.Text color = { ampm === "PM" ? "body" : "primary" }>
                         PM
                     </Button.Text>
                 </Button>
             </Group>
+            {show && (
+                <DateTimePicker 
+                    mode = "time" 
+                    minuteInterval = {5}
+                    value = { date.toDate() }
+                    is24Hour = {false}
+                    onChange = {handleChange}
+                />
+            )}
         </View>
     )
 }
 
-export  { TimePicker };
+const TimePickerMemo = memo(TimePicker);
+
+export  { TimePickerMemo as TimePicker };

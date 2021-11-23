@@ -38,10 +38,6 @@ const GatewayScreen = ({
     const { mutate : verifyStatus, isLoading : isVerifyingStatus , data } = useVerifyOrderStatus();
     const { mutate : createWorkOrder, isLoading : isCreatingOrder } = useCreateWorkOrder();
 
-    console.log({
-        webpay
-    })
-
     useEffect( () => {
         if( orderPaid ){
             verifyStatus({ token: webpay.token });
@@ -51,7 +47,7 @@ const GatewayScreen = ({
     useEffect( () => {
         let result = data;
         if(result){
-            const date = dayjs(order.date,"DD/MM/YYYY HH:mm");
+            const date = dayjs(order.date);
             switch(result.status){
                 case "AUTHORIZED": 
                     createWorkOrder({
@@ -95,7 +91,6 @@ const GatewayScreen = ({
                             javaScriptCanOpenWindowsAutomatically = {true}
                             source={{ html: createFormTemplate(webpay.token,webpay.url) }}
                             onNavigationStateChange = {(newState) => {
-                                console.log(newState);
                                 if(newState.title === "Transbank SDK Nodejs"){
                                     setOrderPaid(true);
                                 }
@@ -129,7 +124,9 @@ const GatewayScreen = ({
                                         </Text>
                                     </Box>
                                     <Box>
-                                        <Button palette = "primary">
+                                        <Button palette = "primary" onPress = { () => {
+                                            navigation.navigate("tabs");
+                                        }}>
                                             Volver al inicio
                                         </Button>
                                     </Box>

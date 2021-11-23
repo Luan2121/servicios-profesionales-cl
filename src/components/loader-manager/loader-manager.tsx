@@ -8,7 +8,7 @@ type StateObject = {
     label?: string,
     action?: ReactNode,
     secondaryLabel?: string,
-    show?: boolean
+    show?: boolean,
 }
 
 type LoaderManagerProps = {
@@ -16,6 +16,8 @@ type LoaderManagerProps = {
     isLoading: boolean,
     error?: StateObject | undefined,
     success?: StateObject | undefined; 
+    variant?: 'cover' | 'backdrop',
+    label?: string,
 }
 
 const width = Dimensions.get('screen').width;
@@ -28,7 +30,9 @@ const LoaderManager = ({
     children,
     isLoading,
     error,
-    success
+    success,
+    variant = "backdrop",
+    label = 'Espere'
 } : LoaderManagerProps) => {
     const { theme } = useTheme();
     return (
@@ -124,6 +128,34 @@ const LoaderManager = ({
                             </View>
                         </Fragment>
                     );
+                }
+
+                if( variant === 'cover' && isLoading){
+                    return (
+                        <Fragment>
+                            <View style = {{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: '#FFF',
+                                opacity: 0.72
+                            }}>
+                                <View style = {{
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Spinner color = "primary" size = "medium" />
+                                    <Text style = {{
+                                        color: theme.palette.body,
+                                        marginLeft: theme.spacing.small
+                                    }}>
+                                        {label}
+                                    </Text>
+                                </View>
+                            </View>
+                        </Fragment>
+                    )
                 }
 
                 return (

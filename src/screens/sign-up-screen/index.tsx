@@ -22,7 +22,6 @@ type Props = {
     navigation: SignUpScreenNavigationProp
 }
 
-
 const SignUpScreen = ({ navigation } : Props ) => {
     const { theme } = useTheme();
     const auth = useAuth();
@@ -35,13 +34,14 @@ const SignUpScreen = ({ navigation } : Props ) => {
                     initialValues = {formInitialValues}
                     validationSchema = {formValidation}
                     onSubmit = {(values) => {
-                        run( auth.register(values) );
+                        run( auth.registerWithEmail(values) );
                     }}
                 >
-                    {({ handleSubmit, isValid, values }) => (
-                        <Box style = {{
+                    {({ handleSubmit, isValid }) => (
+                        <View style = {{
                             flex: 1,
-                            backgroundColor: theme.palette.secondary
+                            backgroundColor: theme.palette.secondary,
+                            height: '100%'
                         }}>
                             <ImageBackground 
                                 source = {Assets.images.bg1} 
@@ -59,51 +59,19 @@ const SignUpScreen = ({ navigation } : Props ) => {
                                         height = {30}
                                     />
                                 </View>
-                                <ScrollView style = {{
-                                    flex: 1
-                                }}>
+                                <ScrollView contentContainerStyle = {{ flexGrow: 1 }}>
                                     <View style = {{
-                                        height: '90%',
                                         backgroundColor: theme.palette.body,
                                         borderTopEndRadius: 16,
                                         borderTopStartRadius: 16,
                                         padding: theme.spacing.xxlarge,
                                         justifyContent: 'space-between',
-                                        flex: 1
+                                        flex: 1,
+                                        flexGrow: 1
                                     }}>
                                         <Stack spacing="xlarge">
-                                            <TextField name = "user" size = "medium" placeholder = "Usuario"  />
                                             <TextField name = "email" size = "medium" placeholder = "Email" />
-                                            <TextField name = "rut" size = "medium" placeholder = "Rut"/>
-                                            <TextField name = "password" size = "medium" placeholder = "Contraseña" />
-                                            <PhoneField 
-                                                name = "phone"
-                                                size = "medium"
-                                                placeholder = "Telefono"
-                                            />
-                                            <TextField name = "giro" size = "medium" placeholder = "Giro" />
-                                            <SelectField 
-                                                name= "city" 
-                                                size = "medium" 
-                                                placeholder = "Ciudad" 
-                                                screen = "select-city-screen"
-                                            />
-                                        <View style = {{ 
-                                            marginTop: 28
-                                        }}>
-                                                <SelectField 
-                                                    name= "comuna" 
-                                                    size = "medium" 
-                                                    placeholder = "Comuna" 
-                                                    screen = "select-comuna-screen"
-                                                    params = {{
-                                                        cityId: values.city?.id
-                                                    }}
-                                                    {...( !values.city?.id ? {
-                                                        disabled: undefined
-                                                    } : {})}
-                                                />
-                                        </View>
+                                            <TextField secureTextEntry = {true}  name = "password" size = "medium" placeholder = "Contraseña" />
                                         </Stack>
                                         <View style = {{
                                             marginTop: 36
@@ -113,7 +81,7 @@ const SignUpScreen = ({ navigation } : Props ) => {
                                                     handleSubmit();
                                                 }}>
                                                     <Button.Text color = {theme.palette.body}>
-                                                        Ingresa
+                                                        Registrate
                                                     </Button.Text>
                                                 </Button>
                                                 <Text color="muted" textAlign="center"> o </Text>
@@ -140,7 +108,7 @@ const SignUpScreen = ({ navigation } : Props ) => {
                                     </View>
                                 </ScrollView>
                             </ImageBackground>
-                        </Box>
+                        </View>
                     )}
                 </Formik>
             </LoaderManager>

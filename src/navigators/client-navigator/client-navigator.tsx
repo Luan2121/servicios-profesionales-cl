@@ -7,6 +7,8 @@ import { PreOrder, Service, WebPayResult } from "@types";
 import { TabBar } from "@components/tab-bar/tab-bar";
 import { AntDesign } from '@expo/vector-icons'; 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth } from "@hooks/use-auth";
+import { Fragment } from "react";
 
 export type ClientNavigatorStack = {
     'service-details': {
@@ -19,6 +21,7 @@ export type ClientNavigatorStack = {
         onGoBack: any
     },
     'select-modality-screen': any,
+    'select-city-screen': any,
     'gateway-screen': {
         order: PreOrder,
         webpay: WebPayResult
@@ -26,7 +29,8 @@ export type ClientNavigatorStack = {
     'checkout-screen': {
         order: PreOrder
     }
-    'tabs': any
+    'tabs': any,
+    'profile': any
 }
 
 export type ClientNavigatorTab = {
@@ -43,53 +47,92 @@ const Stack = createStackNavigator<ClientNavigatorStack>();
 
 // Screens 
 const HomeScreen            = lazy( () => import( "@screens/home-screen") );
-const OrderScreen           = lazy( () => import( "@screens/orders`-screen") );
 const ServiceDetailScreen   = lazy( () => import( "@screens/service-details-screen") );
 const SelectComunaScreen    = lazy( () => import( "@screens/service-details-screen/select-comuna-screen") );
 const SelectServiceScreen   = lazy( () => import( "@screens/service-details-screen/select-service-screen") );
 const SelectModalityScreen  = lazy( () => import( "@screens/service-details-screen/select-modality-screen") );
 const GatewayScreen         = lazy( () => import( "@screens/gateway-screen") );
 const CheckoutScreen        = lazy( () => import( "@screens/checkout-screen") );
+const ProfileScreen         = lazy( () => import( "@screens/profile-screen") );
+const SelectCityScreen   = lazy( () => import("@screens/select-city-screen") );
+
 // Navigators
 const AccountNavigator = lazy( () => import( "../account-navigator/account-navigator" ) );
+const OrdersNavigator = lazy( () => import("../orders-navigator/orders-navigator") );
 
 const ClientNavigator = () => {
+    const { user } = useAuth();
     return (
         <Stack.Navigator headerMode = 'none' initialRouteName = "tabs">
-            <Stack.Screen
-                name = "tabs"
-                component = {ClientTabs}
-            />
-            <Stack.Screen
-                name = "service-details"
-                component = {ServiceDetailScreen}
-            />
-            <Stack.Screen
-                name = "checkout-screen"
-                component = {CheckoutScreen}
-            />
-            <Stack.Screen
-                name = "select-comuna-screen"
-                component = {SelectComunaScreen}
-            />
-            <Stack.Screen
-                name = "select-service-screen"
-                component = {SelectServiceScreen}
-            />
-            <Stack.Screen
-                name = "select-modality-screen"
-                component = {SelectModalityScreen}
-            />
-            <Stack.Screen
-                name = "gateway-screen"
-                component = {GatewayScreen}
-            />
+            {( () => {
+
+                if(!user?.hasProfile){
+                    return (
+                        <Fragment>
+                            <Stack.Screen 
+                                name = "profile"
+                                component = {ProfileScreen}
+                            />
+                             <Stack.Screen
+                                name = "select-comuna-screen"
+                                component = {SelectComunaScreen}
+                            />
+                            <Stack.Screen
+                                name = "select-service-screen"
+                                component = {SelectServiceScreen}
+                            />
+                            <Stack.Screen
+                                name = "select-modality-screen"
+                                component = {SelectModalityScreen}
+                            />
+                            <Stack.Screen
+                                name = "select-city-screen"
+                                component = {SelectCityScreen}
+                            />
+                        </Fragment>
+                    )
+                }
+
+                return (
+                    <Fragment> 
+                        <Stack.Screen
+                            name = "tabs"
+                            component = {ClientTabs}
+                        />
+                        <Stack.Screen
+                            name = "service-details"
+                            component = {ServiceDetailScreen}
+                        />
+                        <Stack.Screen
+                            name = "checkout-screen"
+                            component = {CheckoutScreen}
+                        />
+                        <Stack.Screen
+                            name = "select-comuna-screen"
+                            component = {SelectComunaScreen}
+                        />
+                        <Stack.Screen
+                            name = "select-service-screen"
+                            component = {SelectServiceScreen}
+                        />
+                        <Stack.Screen
+                            name = "select-modality-screen"
+                            component = {SelectModalityScreen}
+                        />
+                        <Stack.Screen
+                            name = "gateway-screen"
+                            component = {GatewayScreen}
+                        />
+                    </Fragment>
+                );
+            })()}
         </Stack.Navigator>
     )
 }
 
 const ClientTabs = () => {
     const { theme } = useTheme();
+    const { isGuest } = useAuth();
     return (
         <Tab.Navigator 
             initialRouteName = "home"  
@@ -99,13 +142,15 @@ const ClientTabs = () => {
                 activeTintColor: theme.palette.body
             }}
         >
-            <Tab.Screen
-                name = "account"
-                component = {AccountNavigator}
-                options = {{
-                    tabBarIcon: (props) => ( <AntDesign {...props} name = "user" color = {props.color} size = {24} /> ),
-                }}
-            />
+            {!isGuest && (
+                <Tab.Screen
+                    name = "account"
+                    component = {AccountNavigator}
+                    options = {{
+                        tabBarIcon: (props) => ( <AntDesign {...props} name = "user" color = {props.color} size = {24} /> ),
+                    }}
+                />
+            )}
             <Tab.Screen 
                 name = "home"
                 component = {HomeScreen}
@@ -113,13 +158,15 @@ const ClientTabs = () => {
                     tabBarIcon: (props) => ( <MaterialCommunityIcons {...props} name = "home-account" color = {props.color} size = {24} /> )
                 }}
             />
-            <Tab.Screen
-                name = "orders"
-                component = {OrderScreen}
-                options = {{
-                    tabBarIcon: (props) => ( <MaterialCommunityIcons {...props} name = "card-search-outline" color = {props.color} size = {24} /> )
-                }}
-            />
+            {!isGuest && (
+                <Tab.Screen
+                    name = "orders"
+                    component = {OrdersNavigator}
+                    options = {{
+                        tabBarIcon: (props) => ( <MaterialCommunityIcons {...props} name = "card-search-outline" color = {props.color} size = {24} /> )
+                    }}
+                />
+            )}
         </Tab.Navigator>
     )
 }

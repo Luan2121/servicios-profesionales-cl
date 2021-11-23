@@ -2,7 +2,7 @@ import React from 'react';
 import { FieldWrapper, Input, InputProps, FieldWrapperProps } from 'bumbag-native';
 import { useField } from 'formik';
 
-interface Props extends Pick<InputProps,'placeholder' | 'size' | 'secureTextEntry' > , FieldWrapperProps {
+interface Props extends Pick<InputProps,'placeholder' | 'size' | 'secureTextEntry' | 'keyboardType' > , FieldWrapperProps {
     name : string
 }
 
@@ -11,6 +11,7 @@ const TextField = ({
     name,
     size,
     secureTextEntry,
+    disabled,
     ...wrapperProps
 } : Props) => {
     const [ _ , meta, helpers ] = useField(name);
@@ -21,6 +22,7 @@ const TextField = ({
         <FieldWrapper {...wrapperProps} state={state}>
             <Input size = {size} placeholder = {placeholder} value = {meta.value}
                 secureTextEntry = {secureTextEntry}
+                disabled = {disabled}
                 onBlur = {() => {
                     helpers.setTouched(true);
                 }} 

@@ -17,15 +17,24 @@ const getToken = async () => {
 }*/
 
 const handleRegisterResponse = async (response : any) => {
+
+    if( response.validacion === 'error'){
+        return Promise.reject("Usuario o clave invalida");
+    }
     const user : User = {
-        username: response.username,
-        id: "1",
-        rut: response.rut ,
-        email: response.email,
-        giro: response.giro,
-        phone: response.telefono,
+        username: response.username || "",
+        id: response.id || "1",
+        rut: response.rut || "" ,
+        email: response.email || "",
+        giro: response.giro || "",
+        phone: response.telefono || "",
+        hasProfile: !!response.rut,
         type: 'client'
     };
+    await AsyncStorage.setItem(
+        userKey,
+        JSON.stringify(user)
+    );
     return user;
 }
 
@@ -33,9 +42,11 @@ const login = async ( data : any ) => {
     try{
         const loginResponse = await client('', getLoginForm(data) );
         const getClientResponse = await client('', getClientForm(loginResponse.rut) );
+
         if(loginResponse.validacion === "error"){
             return null;
         }
+
         const user : User = {
             type: data.userType,
             username: loginResponse.nombre,
@@ -43,7 +54,8 @@ const login = async ( data : any ) => {
             rut: loginResponse.rut,
             dv: loginResponse.dv,
             email: getClientResponse.ret.cli_mail,
-            phone: getClientResponse.ret.cli_telefono1
+            phone: getClientResponse.ret.cli_telefono1,
+            hasProfile: !!loginResponse.rut
         };
         await AsyncStorage.setItem(
             userKey,
@@ -55,7 +67,41 @@ const login = async ( data : any ) => {
     }
 }
 
+const loginWithEmail = async ( data : any ) => {
+    try{
+        const loginResponse = await client('', getLoginWithEmailForm(data) );
+        const user : User = {
+            type: data.userType,
+            username: loginResponse.nombre,
+            id: loginResponse.rut,
+            rut: loginResponse.rut,
+            dv: loginResponse.dv,
+            email: loginResponse.email,
+            phone: "",
+            hasProfile: !!loginResponse.rut && !!loginResponse.username
+        };
+        if(loginResponse.rut && loginResponse.username ){
+            const getClientResponse = await client('', getClientForm(loginResponse.rut) );
+            user.phone = getClientResponse.ret.cli_telefono1
+        }
+        if(loginResponse.validacion === "error"){
+            return null;
+        }
+        await AsyncStorage.setItem(
+            userKey,
+            JSON.stringify(user)
+        );
+        return user;
+    }catch( err ){
+        console.log(err);
+    }
+}
+
 const register = ( data : any ) => {
+    return client('',data).then( handleRegisterResponse );
+}
+
+const registerWithEmail = ( data : any ) => {
     return client('',data).then( handleRegisterResponse );
 }
 
@@ -83,6 +129,14 @@ const getLoginForm = (form : any) => {
     });
 }
 
+const getLoginWithEmailForm = (form : any) => {
+    return ({
+        "op": "login",
+        "email": form.email,
+        "password": form.password
+    });
+}
+
 const getClientForm = (rut : string) => {
     return {
         "op":"getCliente",
@@ -90,4 +144,4 @@ const getClientForm = (rut : string) => {
     }
 }
 
-export { login , logout , register, getToken };
+export { login , logout , register, getToken, registerWithEmail, loginWithEmail };

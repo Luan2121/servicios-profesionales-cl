@@ -13,9 +13,11 @@ const Stack = createStackNavigator<TechnicianNavigatorParamList>();
 
 const TechnicianHomeScreen  = lazy( () => import("@screens/technician-home/technician-home") );
 const MessageScreen         = lazy( () => import("@screens/messages") );
-const TechnicianOrderScreen = lazy( () => import("@screens/technician-orders") );
 const PaymentsScreen        = lazy( () => import("@screens/payments") );
 const AddPaymentScreen      = lazy( () => import("@screens/add-payment") );
+
+//Navigators
+const OrdersNavigator = lazy( () => import("../orders-navigator/orders-navigator") );
 
 const TechnicianNavigator = ({}) => {
     return(
@@ -31,7 +33,7 @@ const TechnicianNavigator = ({}) => {
                 />    
                 <Stack.Screen
                     name = "technician-orders"
-                    component = {TechnicianOrderScreen}
+                    component = {OrdersNavigator}
                 />    
                 <Stack.Screen
                     name = "payments"

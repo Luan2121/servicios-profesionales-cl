@@ -1,5 +1,5 @@
+import React, { Fragment, useEffect } from 'react';
 import { Header } from '@components/header/header';
-import React, { Fragment } from 'react';
 import { StatusBar, Text } from 'react-native';
 import { Stack, Box, Menu } from 'bumbag-native';
 import { useTheme } from 'bumbag';
@@ -8,8 +8,10 @@ import { useAuth } from '@hooks/use-auth';
 import { TechnicianNavigatorParamList } from '@navigators/technician-navigator/technician-navigator';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useCountMessages } from '@hooks/models/use-messages';
+import { useBackgroundLocationTask, useLocation, useMutateLocation, useNotificationChannel } from '@hooks/use-locations';
 import { Alert } from '@components/alerts/alerts';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { configureLocationTracker } from '@tasks/location-tasks';
+import { useClient } from '@hooks/use-client';
 
 type AccountScreenNavigationProp = StackNavigationProp<
     TechnicianNavigatorParamList,
@@ -23,9 +25,32 @@ type Props = {
 const TechnicianHome = ({
     navigation
 } : Props) => {
+    const client = useClient();
     const { theme } = useTheme();
     const { user } = useAuth();
     const { data : messageCounter } = useCountMessages();
+    const { mutate : storeLocation } = useMutateLocation();
+    const { location } = useLocation({ revalidationInterval: 300000 });
+
+    // Location tracker scripts
+    useEffect( () => {
+        storeLocation({ 
+            rut: user?.rut ?? "", 
+            lat: location?.coords.latitude.toString() || "" ,
+            lng: location?.coords.longitude.toString() || "" 
+        });
+    } , [ location, storeLocation ]);
+
+    useEffect( () => {
+        configureLocationTracker({
+            user_rut: user?.rut,
+            client
+        });
+    } , []);
+
+    useBackgroundLocationTask({ revalidationInterval: 300000 });
+    useNotificationChannel();
+
     return (
         <Fragment>
             <StatusBar/>

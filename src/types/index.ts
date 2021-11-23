@@ -37,6 +37,7 @@ type User = {
     giro?: string,
     phone: string,
     dv?: string,
+    hasProfile: boolean,
     type: 'client' | 'technician'
 }
 
@@ -73,6 +74,35 @@ type WebPayResult = {
     url: string
 };
 
+type HistoryItem = {
+    user: string,
+    site: string,
+    date: string,
+    action: string,
+    actionType: 'Modificacion' | 'Presupuesto' | 'Creacion' | 'Asignacion Tecnico' | 'Default',
+    actionIcon: {
+        provider: string,
+        icon: string
+    }
+}
+
+type OrderDetail = {
+    id: string,
+    budget: string | null,
+    status: 'En proceso' | 'Completado',
+    description: string,
+    technicianId: string,
+    client: string,
+    address: string,
+    service: string,
+    specialty: string,
+    hour: string,
+    manager: string,
+    history: HistoryItem[]
+}
+
+type Tone = 'danger' | 'warning' | 'success' | 'info' | 'promote'
+
 export { 
     Service, 
     City, 
@@ -84,5 +114,8 @@ export {
     SubService,
     WebPayResult,
     OrderItem,
-    Message
+    Message,
+    OrderDetail,
+    HistoryItem,
+    Tone
 };

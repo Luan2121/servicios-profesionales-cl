@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import { Service } from "@types";
 import { StatusBar, View, Text, FlatList } from 'react-native';
 import { useTheme } from 'bumbag';
 import { ClientNavigatorTab } from '@navigators/client-navigator/client-navigator';
@@ -11,6 +10,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useServices } from '@hooks/models/use-service';
 import { useAuth } from '@hooks/use-auth';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useSearch } from '@hooks/use-search';
 
 type ServiceDetailScreenNavigationProp = BottomTabNavigationProp<
     ClientNavigatorTab,
@@ -26,8 +26,9 @@ const HomeScreen = ({
 } : Props) => {
     const { theme } = useTheme();
     const { navigate } = navigation;
-    const { user } = useAuth();
+    const { user, isGuest, logout } = useAuth();
     const { data : services } = useServices();
+    const [ searchedServices , searchProps ] = useSearch(services);
     return (
         <Fragment>
             <StatusBar backgroundColor={theme.palette.primary} />
@@ -38,13 +39,15 @@ const HomeScreen = ({
                 }}>
                     <Stack spacing="medium">
                         <Box>
-                            <Text style = {{
-                                color: theme.palette.body,
-                                fontWeight: 'bold',
-                                fontSize: 32
-                            }}>
-                                Hola {user?.username}! 
-                            </Text>
+                            {!isGuest && (
+                                <Text style = {{
+                                    color: theme.palette.body,
+                                    fontWeight: 'bold',
+                                    fontSize: 32
+                                }}>
+                                    Hola {user?.username}! 
+                                </Text>
+                            )}
                             <Text style = {{
                                 color: theme.palette.body
                             }}>
@@ -54,6 +57,8 @@ const HomeScreen = ({
                         <Input
                             iconBefore="search"
                             placeholder = "Buscar Servicio..."
+                            value = {searchProps.value}
+                            onChangeText = {searchProps.onTextChange}
                         />
                     </Stack>
                 </View>
@@ -63,7 +68,7 @@ const HomeScreen = ({
             }}>
                 <Box padding = "medium" marginBottom = "medium">
                     <FlatList
-                        data = {services.filter( service => service.isActive )}
+                        data = {searchedServices.filter( service => service.isActive )}
                         ListHeaderComponent = {(
                             <Text style = {{
                                 fontSize: 18,

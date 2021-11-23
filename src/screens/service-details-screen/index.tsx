@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { RouteProp } from '@react-navigation/native';
 import { useTheme } from 'bumbag';
-import { View, StatusBar, Text, Image, ScrollView } from 'react-native';
+import { View, StatusBar, Text, Image, ScrollView, Alert as RAlert } from 'react-native';
 import { Box, Menu, Set, Stack, Button } from 'bumbag-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ClientNavigatorStack } from '@navigators/client-navigator/client-navigator';
@@ -10,7 +10,7 @@ import { Alert } from '@components/alerts/alerts';
 import { AddressCard } from '@components/address-card/address-card';
 import { useServicePrice } from '@hooks/models/use-service';
 import { Formik } from 'formik';
-import { formInitialValues, formValidation } from './data';
+import { formInitialValues } from './data';
 import { SelectField } from '@components/formik';
 import { TextareaField } from '@components/formik/textarea-field/textarea-field';
 import { CalendarPickerField } from '@components/formik/calendar-picker-field/calendar-picker-field';
@@ -18,6 +18,8 @@ import { useDirections } from '@hooks/models/use-directions';
 import { useAuth } from '@hooks/use-auth';
 import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { PreOrder } from '@types';
+import dayjs from 'dayjs';
+
 
 type ServiceDetailScreenNavigationProp = StackNavigationProp<
     ClientNavigatorStack,
@@ -40,8 +42,8 @@ const ServiceDetailScreen = ({
     route : { params : { service } }
 } : Props ) => {
     const { theme } = useTheme();
+    const { user, isGuest, logout } = useAuth();
     const { data : price } = useServicePrice(service.id);
-    const { user } = useAuth();
     const { data : directions , isLoading : isLoadingDirections } = useDirections( user );
     return (        
         <Fragment>
@@ -53,15 +55,35 @@ const ServiceDetailScreen = ({
             <Formik 
                 initialValues = {formInitialValues}
                 onSubmit = {(values) => {
-                    navigation.navigate("checkout-screen", {
-                        order: {
-                            ...({
-                                ...values,
-                                service,
-                                value: price ?? 1530
-                            }) as PreOrder
-                        }
-                    })
+                    if( isGuest ) {
+                        RAlert.alert(
+                            "No puedes continuar",
+                            "Para poder adquirir un servicio debes estar dentro de tu cuenta",
+                            [
+                                {  
+                                    text: "Ingresar",
+                                    onPress: () => {
+                                        logout();
+                                    }
+                                },
+                                {
+                                    text: "Cancel",
+                                    onPress: () => console.log("Cancel Pressed"),
+                                    style: "cancel"
+                                }
+                            ]
+                        );
+                    }else {
+                        navigation.navigate("checkout-screen", {
+                            order: {
+                                ...({
+                                    ...values,
+                                    service,
+                                    value: price ?? 1530
+                                }) as PreOrder
+                            }
+                        })
+                    }
                 }}
             >
                 {({ 
@@ -71,7 +93,7 @@ const ServiceDetailScreen = ({
                     errors,
                     isValid 
                 }) => {
-                    console.log({errors});
+                    console.log({ d: dayjs(values.date).format("DD/MM/YYYY hh:mm a") });
                     return (
                         <View style = {{ flex: 1 }}>
                             <View style = {{
