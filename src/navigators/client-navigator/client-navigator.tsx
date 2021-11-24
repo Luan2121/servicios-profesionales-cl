@@ -65,34 +65,6 @@ const ClientNavigator = () => {
     return (
         <Stack.Navigator headerMode = 'none' initialRouteName = "tabs">
             {( () => {
-
-                if(!user?.hasProfile){
-                    return (
-                        <Fragment>
-                            <Stack.Screen 
-                                name = "profile"
-                                component = {ProfileScreen}
-                            />
-                             <Stack.Screen
-                                name = "select-comuna-screen"
-                                component = {SelectComunaScreen}
-                            />
-                            <Stack.Screen
-                                name = "select-service-screen"
-                                component = {SelectServiceScreen}
-                            />
-                            <Stack.Screen
-                                name = "select-modality-screen"
-                                component = {SelectModalityScreen}
-                            />
-                            <Stack.Screen
-                                name = "select-city-screen"
-                                component = {SelectCityScreen}
-                            />
-                        </Fragment>
-                    )
-                }
-
                 return (
                     <Fragment> 
                         <Stack.Screen
@@ -123,6 +95,10 @@ const ClientNavigator = () => {
                             name = "gateway-screen"
                             component = {GatewayScreen}
                         />
+                        <Stack.Screen 
+                            name = "profile"
+                            component = {ProfileScreen}
+                        />
                     </Fragment>
                 );
             })()}
@@ -132,7 +108,7 @@ const ClientNavigator = () => {
 
 const ClientTabs = () => {
     const { theme } = useTheme();
-    const { isGuest } = useAuth();
+    const { isGuest, user } = useAuth();
     return (
         <Tab.Navigator 
             initialRouteName = "home"  
@@ -142,7 +118,7 @@ const ClientTabs = () => {
                 activeTintColor: theme.palette.body
             }}
         >
-            {!isGuest && (
+            {( !isGuest && user?.hasProfile ) && (
                 <Tab.Screen
                     name = "account"
                     component = {AccountNavigator}
@@ -158,7 +134,7 @@ const ClientTabs = () => {
                     tabBarIcon: (props) => ( <MaterialCommunityIcons {...props} name = "home-account" color = {props.color} size = {24} /> )
                 }}
             />
-            {!isGuest && (
+            { ( !isGuest && user?.hasProfile ) && (
                 <Tab.Screen
                     name = "orders"
                     component = {OrdersNavigator}

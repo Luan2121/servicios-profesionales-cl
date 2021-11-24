@@ -1,6 +1,6 @@
 import { Header } from '@components/header/header';
-import React , { Fragment } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import React from 'react';
+import { View, FlatList, SafeAreaView } from 'react-native';
 import { useTheme } from 'bumbag';
 import { FAB } from 'react-native-elements';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -26,7 +26,7 @@ const UserDirectionsScreen = ({
     const { data : directions } = useDirections(user);
     const { mutate : deleteDirection } = useDeleteDirection();
     return (
-        <Fragment>
+        <SafeAreaView style = {{ flex: 1 }}>
             <Header
                 title = "Tus direcciones"
                 variant = "stack"
@@ -70,7 +70,7 @@ const UserDirectionsScreen = ({
                     color: '#FFFFFF'
                 }}
             />
-        </Fragment>
+        </SafeAreaView>
     )
 }
 

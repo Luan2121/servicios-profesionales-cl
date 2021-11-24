@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { StatusBar, View, Text, FlatList } from 'react-native';
+import { StatusBar, View, Text, FlatList, SafeAreaView } from 'react-native';
 import { useTheme } from 'bumbag';
 import { ClientNavigatorTab } from '@navigators/client-navigator/client-navigator';
 // Components
@@ -26,67 +26,69 @@ const HomeScreen = ({
 } : Props) => {
     const { theme } = useTheme();
     const { navigate } = navigation;
-    const { user, isGuest, logout } = useAuth();
+    const { user, isGuest } = useAuth();
     const { data : services } = useServices();
     const [ searchedServices , searchProps ] = useSearch(services);
     return (
         <Fragment>
             <StatusBar backgroundColor={theme.palette.primary} />
-            <Header navigation = {navigation} >
-                <View style = {{
-                    paddingHorizontal: theme.spacing.medium,
-                    paddingBottom: theme.spacing.medium
-                }}>
-                    <Stack spacing="medium">
-                        <Box>
-                            {!isGuest && (
+            <SafeAreaView style = {{ flex: 1 }}>
+                <Header navigation = {navigation} >
+                    <View style = {{
+                        paddingHorizontal: theme.spacing.medium,
+                        paddingBottom: theme.spacing.medium
+                    }}>
+                        <Stack spacing="medium">
+                            <Box>
+                                {!isGuest && (
+                                    <Text style = {{
+                                        color: theme.palette.body,
+                                        fontWeight: 'bold',
+                                        fontSize: 32
+                                    }}>
+                                        Hola {user?.username}! 
+                                    </Text>
+                                )}
                                 <Text style = {{
-                                    color: theme.palette.body,
-                                    fontWeight: 'bold',
-                                    fontSize: 32
+                                    color: theme.palette.body
                                 }}>
-                                    Hola {user?.username}! 
+                                    ¿Que servicios buscas hoy?
+                                </Text>
+                            </Box>  
+                            <Input
+                                iconBefore="search"
+                                placeholder = "Buscar Servicio..."
+                                value = {searchProps.value}
+                                onChangeText = {searchProps.onTextChange}
+                            />
+                        </Stack>
+                    </View>
+                </Header>
+                <ScrollView style = {{
+                    flex: 1
+                }}>
+                    <Box padding = "medium" marginBottom = "medium">
+                        <FlatList
+                            data = {searchedServices.filter( service => service.isActive )}
+                            ListHeaderComponent = {(
+                                <Text style = {{
+                                    fontSize: 18,
+                                    fontWeight: '100',
+                                    marginBottom: theme.spacing.medium
+                                }}>
+                                    Todos los servicios
                                 </Text>
                             )}
-                            <Text style = {{
-                                color: theme.palette.body
-                            }}>
-                                ¿Que servicios buscas hoy?
-                            </Text>
-                        </Box>  
-                        <Input
-                            iconBefore="search"
-                            placeholder = "Buscar Servicio..."
-                            value = {searchProps.value}
-                            onChangeText = {searchProps.onTextChange}
+                            keyExtractor = { (item) => item.name }
+                            renderItem = {({ item }) => (
+                                <ServiceCard item = {item} onPress = {(e,item) => {
+                                    navigate( 'service-details' , { service: item });
+                                }} />
+                            )}
                         />
-                    </Stack>
-                </View>
-            </Header>
-            <ScrollView style = {{
-                flex: 1
-            }}>
-                <Box padding = "medium" marginBottom = "medium">
-                    <FlatList
-                        data = {searchedServices.filter( service => service.isActive )}
-                        ListHeaderComponent = {(
-                            <Text style = {{
-                                fontSize: 18,
-                                fontWeight: '100',
-                                marginBottom: theme.spacing.medium
-                            }}>
-                                Todos los servicios
-                            </Text>
-                        )}
-                        keyExtractor = { (item) => item.name }
-                        renderItem = {({ item }) => (
-                            <ServiceCard item = {item} onPress = {(e,item) => {
-                                navigate( 'service-details' , { service: item });
-                            }} />
-                        )}
-                    />
-                </Box>
-            </ScrollView>
+                    </Box>
+                </ScrollView>
+            </SafeAreaView>
         </Fragment>
     )
 }

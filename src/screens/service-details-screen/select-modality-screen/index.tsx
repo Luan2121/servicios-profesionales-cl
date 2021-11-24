@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Header } from '@components/header/header';
 import { Menu } from 'bumbag-native';
@@ -28,7 +28,7 @@ const SelectModalityScreen = ({
         }
     } , [selection]);
     return (
-        <Fragment>
+        <SafeAreaView>
             <Header
                 title = "Seleccionar Comuna"
                 navigation = {navigation}
@@ -60,7 +60,7 @@ const SelectModalityScreen = ({
                     </Menu.OptionGroup>
                 </Menu>
             </ScrollView>
-        </Fragment>
+        </SafeAreaView>
     )
 }
 

@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { StatusBar, View, Text, FlatList } from 'react-native';
+import { StatusBar, View, Text, FlatList, SafeAreaView } from 'react-native';
 import { Header } from '@components/header/header';
 import { OrderNavigatorParamList } from "@navigators/orders-navigator/orders-navigator";
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -55,139 +55,141 @@ const OrderDetail = ({
     return (
         <Fragment>
             <StatusBar/>
-            <Header
-                title = {`Orden: ${order.id}`}
-                variant = "stack"
-                navigation = {navigation}
-            />
-            <LoaderManager isLoading = {isLoadingOrderDetails || !orderDetail} variant = {'cover'}>
-                <ScrollView style = {{
-                    flex: 1,
-                    marginBottom: theme.spacing.large
-                }}>
-                    <View style = {{
-                        padding: theme.spacing.large,
+            <SafeAreaView style = {{ flex: 1 }}>
+                <Header
+                    title = {`Orden: ${order.id}`}
+                    variant = "stack"
+                    navigation = {navigation}
+                />
+                <LoaderManager isLoading = {isLoadingOrderDetails || !orderDetail} variant = {'cover'}>
+                    <ScrollView style = {{
+                        flex: 1,
+                        marginBottom: theme.spacing.large
                     }}>
                         <View style = {{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center'
+                            padding: theme.spacing.large,
                         }}>
-                            <Text style = {{
-                                color: theme.palette.secondary,
-                                fontWeight: '300'
+                            <View style = {{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
                             }}>
-                                Presupuesto: { orderDetail?.budget || "No tiene" }
-                            </Text>
-                            <Pill tone = {toneForStatusMap[orderDetail?.status || 'warning']}>
-                                <PillText>
-                                    Estatus: {orderDetail?.status || ""}
-                                </PillText>
-                            </Pill>
+                                <Text style = {{
+                                    color: theme.palette.secondary,
+                                    fontWeight: '300'
+                                }}>
+                                    Presupuesto: { orderDetail?.budget || "No tiene" }
+                                </Text>
+                                <Pill tone = {toneForStatusMap[orderDetail?.status || 'warning']}>
+                                    <PillText>
+                                        Estatus: {orderDetail?.status || ""}
+                                    </PillText>
+                                </Pill>
+                            </View>
+                            <View style = {{
+                                marginTop: theme.spacing.large
+                            }}>
+                                <Text style = {{ fontSize: 18 }}>
+                                    Descripcion
+                                </Text>
+                                <Text style = {{ marginTop: theme.spacing.medium, color: theme.palette.muted }} >
+                                    {orderDetail?.description}
+                                </Text>
+                                <Divider style = {{ marginTop: theme.spacing.large }} />
+                            </View>
+                            { !!orderDetail?.address && (
+                                <OrderSummaryItem
+                                    content = {orderDetail.address}
+                                    icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
+                                    title = {`Cliente: ${orderDetail.client}`}
+                                    style = {{
+                                        marginTop: theme.spacing.large
+                                    }}
+                                />
+                            )}
+                            { !!orderDetail?.service && (
+                                <OrderSummaryItem
+                                    title = "Tipo de servicio"
+                                    icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
+                                    content = {`${orderDetail.service} | ${orderDetail.specialty}`}
+                                    style = {{
+                                        marginTop: theme.spacing.large
+                                    }}
+                                />
+                            )}
+                            { !!orderDetail?.technicianId && (
+                                <OrderSummaryItem
+                                    title = {`Tecnico ${orderDetail.technicianId}`}
+                                    icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
+                                    content = "John Doe"
+                                    style = {{
+                                        marginTop: theme.spacing.large
+                                    }}
+                                />
+                            )}
+                            {/*<OrderSummaryItem
+                                title = "Metodo de pago"
+                                icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
+                                content = "Online, Orden #3697"
+                                style = {{
+                                    marginTop: theme.spacing.large
+                                }}
+                            />*/}
+                            {!!orderDetail?.history.length && (
+                                <Fragment>
+                                    <View style = {{
+                                        marginTop: theme.spacing.large
+                                    }}>
+                                        <Text style = {{
+                                            textAlign: 'center',
+                                            fontWeight: 'bold',
+                                            color: theme.palette.primary,
+                                            fontSize: 18
+                                        }}>
+                                            Seguimiento
+                                        </Text>
+                                    </View>
+                                    <FlatList 
+                                        contentContainerStyle = {{
+                                            marginTop: theme.spacing.large
+                                        }}
+                                        data = {orderDetail?.history || []}
+                                        renderItem = { ({ item, index }) => (
+                                            <HistoryStep item = {item} showBar = {index < ( orderDetail?.history || [] ).length - 1 } /> 
+                                        )}
+                                    />
+                                </Fragment>
+                            )}
                         </View>
                         <View style = {{
                             marginTop: theme.spacing.large
                         }}>
-                            <Text style = {{ fontSize: 18 }}>
-                                Descripcion
-                            </Text>
-                            <Text style = {{ marginTop: theme.spacing.medium, color: theme.palette.muted }} >
-                                {orderDetail?.description}
-                            </Text>
-                            <Divider style = {{ marginTop: theme.spacing.large }} />
+                            {user?.type === "technician" && (
+                                <UploadButton isLoading = {isLoadingOrderDetails} onUpload = {(image) => {
+                                    storePhoto({
+                                        orderId: order.id,
+                                        technicianId: user?.rut || "",
+                                        photo: image
+                                    });
+                                }}/>
+                            )}
                         </View>
-                        { !!orderDetail?.address && (
-                            <OrderSummaryItem
-                                content = {orderDetail.address}
-                                icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
-                                title = {`Cliente: ${orderDetail.client}`}
-                                style = {{
-                                    marginTop: theme.spacing.large
-                                }}
-                            />
-                        )}
-                        { !!orderDetail?.service && (
-                            <OrderSummaryItem
-                                title = "Tipo de servicio"
-                                icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
-                                content = {`${orderDetail.service} | ${orderDetail.specialty}`}
-                                style = {{
-                                    marginTop: theme.spacing.large
-                                }}
-                            />
-                        )}
-                        { !!orderDetail?.technicianId && (
-                            <OrderSummaryItem
-                                title = {`Tecnico ${orderDetail.technicianId}`}
-                                icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
-                                content = "John Doe"
-                                style = {{
-                                    marginTop: theme.spacing.large
-                                }}
-                            />
-                        )}
-                        {/*<OrderSummaryItem
-                            title = "Metodo de pago"
-                            icon = {<Feather name="map-pin" size={14} color={theme.palette.muted} />}
-                            content = "Online, Orden #3697"
-                            style = {{
-                                marginTop: theme.spacing.large
-                            }}
-                        />*/}
-                        {!!orderDetail?.history.length && (
-                            <Fragment>
-                                <View style = {{
-                                    marginTop: theme.spacing.large
-                                }}>
-                                    <Text style = {{
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                        color: theme.palette.primary,
-                                        fontSize: 18
-                                    }}>
-                                        Seguimiento
-                                    </Text>
-                                </View>
-                                <FlatList 
-                                    contentContainerStyle = {{
-                                        marginTop: theme.spacing.large
-                                    }}
-                                    data = {orderDetail?.history || []}
-                                    renderItem = { ({ item, index }) => (
-                                        <HistoryStep item = {item} showBar = {index < ( orderDetail?.history || [] ).length - 1 } /> 
-                                    )}
-                                />
-                            </Fragment>
-                        )}
-                    </View>
-                    <View style = {{
-                        marginTop: theme.spacing.large
-                    }}>
-                        {user?.type === "technician" && (
-                            <UploadButton isLoading = {isLoadingOrderDetails} onUpload = {(image) => {
-                                storePhoto({
-                                    orderId: order.id,
-                                    technicianId: user?.rut || "",
-                                    photo: image
-                                });
-                            }}/>
-                        )}
-                    </View>
-                    {user?.type === 'technician' && (
-                        <View style = {{
-                            padding: theme.spacing.medium
-                        }}>
-                            <Button palette = "primary" onPress = {() => {
-                                navigation.navigate("mutate-report-screen", { 
-                                    order
-                                });
+                        {user?.type === 'technician' && (
+                            <View style = {{
+                                padding: theme.spacing.medium
                             }}>
-                                Agregar reporte
-                            </Button>
-                        </View>
-                    )}
-                </ScrollView>
-            </LoaderManager>
+                                <Button palette = "primary" onPress = {() => {
+                                    navigation.navigate("mutate-report-screen", { 
+                                        order
+                                    });
+                                }}>
+                                    Agregar reporte
+                                </Button>
+                            </View>
+                        )}
+                    </ScrollView>
+                </LoaderManager>
+            </SafeAreaView>
         </Fragment>
     )
 };

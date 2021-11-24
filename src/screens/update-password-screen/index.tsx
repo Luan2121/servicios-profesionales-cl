@@ -1,6 +1,6 @@
 import { Header } from '@components/header/header';
 import React, { Fragment } from 'react';
-import { StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AccountNavigatorParamList } from '@navigators/account-navigator/account-navigator';
 import { Stack, Button, Box } from 'bumbag-native';
@@ -26,44 +26,46 @@ const UpdatePasswordScreen = (props : Props) => {
     return (
         <Fragment>
             <StatusBar/>
-            <Header
-                variant = "stack"
-                title = "Actualizar contraseña" 
-                navigation = {props.navigation}
-            />
-            <Formik 
-                initialValues = {formInitialValues} 
-                validationSchema = {formValidation}
-                onSubmit = {(values) => {
-                    updatePassword({...values, rut: user?.rut ?? "" }).then(
-                        () => { alert("Contraseña actualizada correctamente") },
-                        () => { alert("Error al actualizar su contraseña") }
-                    )
-                }}
-            >
-                {({ handleSubmit }) => (
-                    <Box padding = "large"> 
-                        <Stack spacing = "large">
-                            <TextField
-                                placeholder = "Nueva contraseña"
-                                size = "medium"
-                                name = "password"
-                            />
-                            <Button 
-                                size = "large"
-                                palette = "primary"
-                                onPress = {() => { handleSubmit() }} 
-                                disabled = {isLoading}
-                                isLoading = {isLoading} 
-                            >
-                                <Button.Text>
-                                    Guardar
-                                </Button.Text>
-                            </Button>
-                        </Stack>
-                    </Box>
-                )}
-            </Formik>
+            <SafeAreaView style = {{ flex: 1 }}>
+                <Header
+                    variant = "stack"
+                    title = "Actualizar contraseña" 
+                    navigation = {props.navigation}
+                />
+                <Formik 
+                    initialValues = {formInitialValues} 
+                    validationSchema = {formValidation}
+                    onSubmit = {(values) => {
+                        updatePassword({...values, rut: user?.rut ?? "" }).then(
+                            () => { alert("Contraseña actualizada correctamente") },
+                            () => { alert("Error al actualizar su contraseña") }
+                        )
+                    }}
+                >
+                    {({ handleSubmit }) => (
+                        <Box padding = "large"> 
+                            <Stack spacing = "large">
+                                <TextField
+                                    placeholder = "Nueva contraseña"
+                                    size = "medium"
+                                    name = "password"
+                                />
+                                <Button 
+                                    size = "large"
+                                    palette = "primary"
+                                    onPress = {() => { handleSubmit() }} 
+                                    disabled = {isLoading}
+                                    isLoading = {isLoading} 
+                                >
+                                    <Button.Text>
+                                        Guardar
+                                    </Button.Text>
+                                </Button>
+                            </Stack>
+                        </Box>
+                    )}
+                </Formik>
+            </SafeAreaView>
         </Fragment>
     )
 }

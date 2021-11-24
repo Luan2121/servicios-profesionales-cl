@@ -1,5 +1,5 @@
 import React , { Fragment, useState, useEffect } from 'react';
-import { View, StatusBar, ScrollView } from 'react-native';
+import { View, StatusBar, ScrollView, SafeAreaView } from 'react-native';
 import { Menu } from 'bumbag-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { ClientNavigatorStack } from '@navigators/client-navigator/client-navigator';
@@ -34,7 +34,7 @@ const SelectServiceScreen = ({ navigation, route } : Props) => {
     } , [selection]);
 
     return (
-        <Fragment>
+        <SafeAreaView style = {{ flex: 1 }}>
             <StatusBar />
             <Header
                 title = "Seleccionar Comuna"
@@ -67,7 +67,7 @@ const SelectServiceScreen = ({ navigation, route } : Props) => {
                     </Menu.OptionGroup>
                 </Menu>
             </ScrollView>
-        </Fragment>
+        </SafeAreaView>
     )
 }
 

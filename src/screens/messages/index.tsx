@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
-import { theme, useTheme } from 'bumbag';
-import { Stack } from 'bumbag-native';
-import { StatusBar, View, Text, ScrollView } from 'react-native';
+import { useTheme } from 'bumbag';
+import { StatusBar, View, Text, ScrollView, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '@hooks/use-auth';
 import { TechnicianNavigatorParamList } from '@navigators/technician-navigator/technician-navigator';
@@ -28,27 +27,29 @@ const MessageScreen = ({navigation} : Props) => {
     return (
         <Fragment>
             <StatusBar/>
-            <Header
-                variant = "stack"
-                navigation = {navigation}
-                title = "Tus mensajes"
-            />
-            <ScrollView style = {{
-                flex: 1,
-                padding: theme.spacing.large,
-                marginBottom: theme.spacing.large
-            }}>
-                <FlatList
-                    data = {messages || []}
-                    renderItem = {({ item }) => (
-                        <View style = {{
-                            marginBottom: theme.spacing.medium
-                        }}>
-                            <MessageItem item = {item} />
-                        </View>
-                    )}
+            <SafeAreaView style = {{ flex: 1 }}>
+                <Header
+                    variant = "stack"
+                    navigation = {navigation}
+                    title = "Tus mensajes"
                 />
-            </ScrollView>
+                <ScrollView style = {{
+                    flex: 1,
+                    padding: theme.spacing.large,
+                    marginBottom: theme.spacing.large
+                }}>
+                    <FlatList
+                        data = {messages || []}
+                        renderItem = {({ item }) => (
+                            <View style = {{
+                                marginBottom: theme.spacing.medium
+                            }}>
+                                <MessageItem item = {item} />
+                            </View>
+                        )}
+                    />
+                </ScrollView>
+            </SafeAreaView>
         </Fragment>
     )
 }

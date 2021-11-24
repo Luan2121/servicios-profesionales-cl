@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { useTheme } from 'bumbag';
-import { StatusBar, View, Text } from 'react-native';
+import { StatusBar, View, Text, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '@hooks/use-auth';
 import { TechnicianNavigatorParamList } from '@navigators/technician-navigator/technician-navigator';
@@ -56,124 +56,126 @@ const AddPaymentScreen = ({navigation} : Props) => {
                     )
                 }}
             > 
-                <Header
-                    variant = "stack"
-                    title = "Nuevo abono"
-                    navigation = {navigation}
-                />
-                <ScrollView style = {{
-                    flex: 1,
-                    height: '100%'
-                }}>
-                    <Formik
-                        initialValues = {formInitialValues}
-                        validationSchema = {formValidation}
-                        onSubmit = {(values) => {
-                            addPayment({
-                                ...values,
-                                rut: user?.rut ?? ''
-                            });
-                        }}
-                    >
-                        {({ handleSubmit, setFieldValue, values }) => (
-                            <View style = {{
-                                padding: theme.spacing.large
-                            }}>
-                                <Stack>
-                                    <Box justifyContent = "center">
-                                        <Text style = {{
-                                            fontSize: 18,
-                                            marginBottom: theme.spacing.medium
-                                        }}>
-                                            Seleccione metodo de pago
-                                        </Text>
-                                        <View style = {{
-                                            flexDirection: 'row',
-                                            justifyContent: 'center',
-                                            marginBottom: theme.spacing.medium
-                                        }}>
-                                            <View style = {{
-                                                paddingRight: theme.spacing.medium
+                <SafeAreaView style = {{ flex: 1 }}>
+                    <Header
+                        variant = "stack"
+                        title = "Nuevo abono"
+                        navigation = {navigation}
+                    />
+                    <ScrollView style = {{
+                        flex: 1,
+                        height: '100%'
+                    }}>
+                        <Formik
+                            initialValues = {formInitialValues}
+                            validationSchema = {formValidation}
+                            onSubmit = {(values) => {
+                                addPayment({
+                                    ...values,
+                                    rut: user?.rut ?? ''
+                                });
+                            }}
+                        >
+                            {({ handleSubmit, setFieldValue, values }) => (
+                                <View style = {{
+                                    padding: theme.spacing.large
+                                }}>
+                                    <Stack>
+                                        <Box justifyContent = "center">
+                                            <Text style = {{
+                                                fontSize: 18,
+                                                marginBottom: theme.spacing.medium
                                             }}>
-                                                <PaymentMethodButton
-                                                    type = "Deposito"
-                                                    selected = { values.paymentMethod === "Deposito" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Deposito')
-                                                    }}
-                                                />
-                                            </View>
-                                            <View>
-                                                <PaymentMethodButton
-                                                    type = "Transferencia"
-                                                    selected = { values.paymentMethod === "Transferencia" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Transferencia')
-                                                    }}
-                                                />
-                                            </View>
-                                        </View>
-                                        <View style = {{
-                                            flexDirection: 'row',
-                                            justifyContent: 'center'
-                                        }}>
+                                                Seleccione metodo de pago
+                                            </Text>
                                             <View style = {{
-                                                paddingRight: theme.spacing.medium
+                                                flexDirection: 'row',
+                                                justifyContent: 'center',
+                                                marginBottom: theme.spacing.medium
                                             }}>
-                                                <PaymentMethodButton
-                                                    type = "Credito"
-                                                    selected = { values.paymentMethod === "Credito" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Credito')
-                                                    }}
-                                                />
+                                                <View style = {{
+                                                    paddingRight: theme.spacing.medium
+                                                }}>
+                                                    <PaymentMethodButton
+                                                        type = "Deposito"
+                                                        selected = { values.paymentMethod === "Deposito" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Deposito')
+                                                        }}
+                                                    />
+                                                </View>
+                                                <View>
+                                                    <PaymentMethodButton
+                                                        type = "Transferencia"
+                                                        selected = { values.paymentMethod === "Transferencia" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Transferencia')
+                                                        }}
+                                                    />
+                                                </View>
                                             </View>
-                                            <View>
-                                                <PaymentMethodButton
-                                                    type = "Debito"
-                                                    selected = { values.paymentMethod === "Debito" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Debito')
-                                                    }}
-                                                />
+                                            <View style = {{
+                                                flexDirection: 'row',
+                                                justifyContent: 'center'
+                                            }}>
+                                                <View style = {{
+                                                    paddingRight: theme.spacing.medium
+                                                }}>
+                                                    <PaymentMethodButton
+                                                        type = "Credito"
+                                                        selected = { values.paymentMethod === "Credito" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Credito')
+                                                        }}
+                                                    />
+                                                </View>
+                                                <View>
+                                                    <PaymentMethodButton
+                                                        type = "Debito"
+                                                        selected = { values.paymentMethod === "Debito" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Debito')
+                                                        }}
+                                                    />
+                                                </View>
                                             </View>
-                                        </View>
-                                    </Box>
-                                    <TextField 
-                                        name = "orderId"
-                                        label = "ID orden de trabajo"
-                                    />
-                                    <Box>
-                                        <TextField
-                                            name = "value"
-                                            label = "Monto"
+                                        </Box>
+                                        <TextField 
+                                            name = "orderId"
+                                            label = "ID orden de trabajo"
                                         />
-                                    </Box>
-                                    <TextareaField
-                                        name = "description"
-                                        placeholder = "Descripcion"
-                                    />
-                                    <Box marginTop = "large">
-                                        <CalendarPickerField
-                                            name = "date"
-                                            format = ""
-                                            showTime = {false}
-                                            selectedDayColor={theme.palette.primary}
-                                            selectedDayTextColor={theme.palette.body}
+                                        <Box>
+                                            <TextField
+                                                name = "value"
+                                                label = "Monto"
+                                            />
+                                        </Box>
+                                        <TextareaField
+                                            name = "description"
+                                            placeholder = "Descripcion"
                                         />
-                                    </Box>
-                                    <Box marginTop = "large">
-                                        <Button palette = "primary" onPress = {() => {
-                                            handleSubmit();
-                                        }}>
-                                            Guardar
-                                        </Button>
-                                    </Box>
-                                </Stack>
-                            </View>
-                        )}
-                    </Formik>
-                </ScrollView>
+                                        <Box marginTop = "large">
+                                            <CalendarPickerField
+                                                name = "date"
+                                                format = ""
+                                                showTime = {false}
+                                                selectedDayColor={theme.palette.primary}
+                                                selectedDayTextColor={theme.palette.body}
+                                            />
+                                        </Box>
+                                        <Box marginTop = "large">
+                                            <Button palette = "primary" onPress = {() => {
+                                                handleSubmit();
+                                            }}>
+                                                Guardar
+                                            </Button>
+                                        </Box>
+                                    </Stack>
+                                </View>
+                            )}
+                        </Formik>
+                    </ScrollView>
+                </SafeAreaView>
             </LoaderManager>
         </Fragment>
     )

@@ -1,6 +1,6 @@
 import { Header } from '@components/header/header';
 import React, { Fragment } from 'react';
-import { StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AccountNavigatorParamList } from '@navigators/account-navigator/account-navigator';
 import { Stack, Button, Box } from 'bumbag-native';
@@ -27,49 +27,51 @@ const UserDataScreen = (props : Props) => {
     return (
         <Fragment>
             <StatusBar/>
-            <Header
-                variant = "stack"
-                title = "Actualizar datps" 
-                navigation = {props.navigation}
-            />
-            <Formik 
-                initialValues = {getInitialValues(formInitialValues, user)} 
-                validationSchema = {formValidation}
-                onSubmit = {(values) => {
-                    updateUserData({
-                        ...values,
-                        rut: user?.rut ?? ""
-                    }).then(
-                        () => { alert("Tus datos se han actualizado correctamente") },
-                        () => { alert("No se han podido actualizar tus datos") }
-                    )
-                }}
-            >
-                {({ handleSubmit }) => (
-                    <Box padding = "large"> 
-                        <Stack spacing = "large">
-                            <TextField name = "user" size = "medium" placeholder = "Usuario"  />
-                            <TextField name = "email" size = "medium" placeholder = "Email" />
-                            <PhoneField 
-                                name = "phone"
-                                size = "medium"
-                                placeholder = "Telefono"
-                            />
-                            <Button 
-                                size = "large"
-                                palette = "primary"
-                                onPress = {() => { handleSubmit() }} 
-                                disabled = {isLoading}
-                                isLoading = {isLoading} 
-                            >
-                                <Button.Text>
-                                    Guardar
-                                </Button.Text>
-                            </Button>
-                        </Stack>
-                    </Box>
-                )}
-            </Formik>
+            <SafeAreaView style = {{ flex: 1 }}>
+                <Header
+                    variant = "stack"
+                    title = "Actualizar datps" 
+                    navigation = {props.navigation}
+                />
+                <Formik 
+                    initialValues = {getInitialValues(formInitialValues, user)} 
+                    validationSchema = {formValidation}
+                    onSubmit = {(values) => {
+                        updateUserData({
+                            ...values,
+                            rut: user?.rut ?? ""
+                        }).then(
+                            () => { alert("Tus datos se han actualizado correctamente") },
+                            () => { alert("No se han podido actualizar tus datos") }
+                        )
+                    }}
+                >
+                    {({ handleSubmit }) => (
+                        <Box padding = "large"> 
+                            <Stack spacing = "large">
+                                <TextField name = "user" size = "medium" placeholder = "Usuario"  />
+                                <TextField name = "email" size = "medium" placeholder = "Email" />
+                                <PhoneField 
+                                    name = "phone"
+                                    size = "medium"
+                                    placeholder = "Telefono"
+                                />
+                                <Button 
+                                    size = "large"
+                                    palette = "primary"
+                                    onPress = {() => { handleSubmit() }} 
+                                    disabled = {isLoading}
+                                    isLoading = {isLoading} 
+                                >
+                                    <Button.Text>
+                                        Guardar
+                                    </Button.Text>
+                                </Button>
+                            </Stack>
+                        </Box>
+                    )}
+                </Formik>
+            </SafeAreaView>
         </Fragment>
     )
 }

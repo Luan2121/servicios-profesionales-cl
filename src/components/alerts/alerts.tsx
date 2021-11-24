@@ -35,7 +35,8 @@ const Alert = ( {
             backgroundColor: theme.palette[ backgroundForTone[tone] ],
             padding: theme.spacing.medium,
             flexDirection: 'row',
-            borderRadius: 16
+            borderRadius: 16,
+            flexWrap: 'wrap'
         }}>
             {!!icon && (
                 <View style = {{

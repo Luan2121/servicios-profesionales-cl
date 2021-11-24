@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { StatusBar, View, ScrollView, FlatList, Text } from 'react-native';
+import { StatusBar, View, ScrollView, FlatList, Text, SafeAreaView } from 'react-native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { OrderNavigatorParamList } from '@navigators/orders-navigator/orders-navigator';
 import { Header } from '@components/header/header';
@@ -31,27 +31,29 @@ const OrderScreen = ({
     return (
         <Fragment>
             <StatusBar/>
+            <SafeAreaView>
             <Header
                 title = "Tus ordenes"
                 variant = "stack"
                 navigation = {navigation}
             />
-            <LoaderManager isLoading = {isLoading} >
-                <ScrollView style = {{
-                    flex: 1
-                }} >
-                    <FlatList
-                        data = {orders}
-                        renderItem = {({ item }) => (
-                            <View style = {{
-                                marginBottom: theme.spacing.small
-                            }}>
-                                <OrderItem item = {item} navigation = {navigation} />
-                            </View>
-                        )}
-                    />
-                </ScrollView>
-            </LoaderManager>
+                <LoaderManager isLoading = {isLoading} >
+                    <ScrollView style = {{
+                        flex: 1
+                    }} >
+                        <FlatList
+                            data = {orders}
+                            renderItem = {({ item }) => (
+                                <View style = {{
+                                    marginBottom: theme.spacing.small
+                                }}>
+                                    <OrderItem item = {item} navigation = {navigation} />
+                                </View>
+                            )}
+                        />
+                    </ScrollView>
+                </LoaderManager>
+            </SafeAreaView>
         </Fragment>
     )
 }

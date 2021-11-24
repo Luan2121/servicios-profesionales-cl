@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { StatusBar, View, Text } from 'react-native';
+import { StatusBar, View, Text, SafeAreaView } from 'react-native';
 import { Header } from '@components/header/header';
 import { OrderNavigatorParamList } from "@navigators/orders-navigator/orders-navigator";
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -43,153 +43,155 @@ const MutateReportScreen = ({
     return (
         <LoaderManager isLoading = {isLoading} >
             <StatusBar/>
-            <Header
-                title = "Reporte de valores"
-                variant = "stack"
-                navigation = {navigation}
-            />
-            <ScrollView style = {{
-                flex: 1,
-                marginBottom: theme.spacing.large
-            }}>
-                <Formik initialValues = {formInitialValues}
-                    validationSchema = {formValidation}
-                    onSubmit = {(values) => {
-                        addReport({
-                            ...values, 
-                            userRut: user?.rut || "",
-                            orderId: order.id
-                        });
-                    }}
-                >
-                    {({ handleSubmit, setFieldValue, values }) => {
-                        return (
-                            <View style = {{
-                                padding: theme.spacing.large
-                            }}>
-                                <Stack>
-                                    <Box justifyContent = "center">
-                                        <Text style = {{
-                                            fontSize: 18,
-                                            marginBottom: theme.spacing.medium
-                                        }}>
-                                            Seleccione metodo de pago
-                                        </Text>
-                                        <View style = {{
-                                            flexDirection: 'row',
-                                            justifyContent: 'center',
-                                            marginBottom: theme.spacing.medium
-                                        }}>
-                                            <View style = {{
-                                                paddingRight: theme.spacing.medium
+            <SafeAreaView style = {{ flex: 1 }}>
+                <Header
+                    title = "Reporte de valores"
+                    variant = "stack"
+                    navigation = {navigation}
+                />
+                <ScrollView style = {{
+                    flex: 1,
+                    marginBottom: theme.spacing.large
+                }}>
+                    <Formik initialValues = {formInitialValues}
+                        validationSchema = {formValidation}
+                        onSubmit = {(values) => {
+                            addReport({
+                                ...values, 
+                                userRut: user?.rut || "",
+                                orderId: order.id
+                            });
+                        }}
+                    >
+                        {({ handleSubmit, setFieldValue, values }) => {
+                            return (
+                                <View style = {{
+                                    padding: theme.spacing.large
+                                }}>
+                                    <Stack>
+                                        <Box justifyContent = "center">
+                                            <Text style = {{
+                                                fontSize: 18,
+                                                marginBottom: theme.spacing.medium
                                             }}>
-                                                <PaymentMethodButton
-                                                    type = "Deposito"
-                                                    selected = { values.paymentMethod === "Deposito" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Deposito')
-                                                    }}
-                                                />
-                                            </View>
-                                            <View>
-                                                <PaymentMethodButton
-                                                    type = "Transferencia"
-                                                    selected = { values.paymentMethod === "Transferencia" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Transferencia')
-                                                    }}
-                                                />
-                                            </View>
-                                        </View>
-                                        <View style = {{
-                                            flexDirection: 'row',
-                                            justifyContent: 'center'
-                                        }}>
+                                                Seleccione metodo de pago
+                                            </Text>
                                             <View style = {{
-                                                paddingRight: theme.spacing.medium
+                                                flexDirection: 'row',
+                                                justifyContent: 'center',
+                                                marginBottom: theme.spacing.medium
                                             }}>
-                                                <PaymentMethodButton
-                                                    type = "Credito"
-                                                    selected = { values.paymentMethod === "Credito" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Credito')
-                                                    }}
-                                                />
+                                                <View style = {{
+                                                    paddingRight: theme.spacing.medium
+                                                }}>
+                                                    <PaymentMethodButton
+                                                        type = "Deposito"
+                                                        selected = { values.paymentMethod === "Deposito" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Deposito')
+                                                        }}
+                                                    />
+                                                </View>
+                                                <View>
+                                                    <PaymentMethodButton
+                                                        type = "Transferencia"
+                                                        selected = { values.paymentMethod === "Transferencia" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Transferencia')
+                                                        }}
+                                                    />
+                                                </View>
                                             </View>
-                                            <View>
-                                                <PaymentMethodButton
-                                                    type = "Debito"
-                                                    selected = { values.paymentMethod === "Debito" }
-                                                    onPress = { () => {
-                                                        setFieldValue('paymentMethod','Debito')
-                                                    }}
-                                                />
+                                            <View style = {{
+                                                flexDirection: 'row',
+                                                justifyContent: 'center'
+                                            }}>
+                                                <View style = {{
+                                                    paddingRight: theme.spacing.medium
+                                                }}>
+                                                    <PaymentMethodButton
+                                                        type = "Credito"
+                                                        selected = { values.paymentMethod === "Credito" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Credito')
+                                                        }}
+                                                    />
+                                                </View>
+                                                <View>
+                                                    <PaymentMethodButton
+                                                        type = "Debito"
+                                                        selected = { values.paymentMethod === "Debito" }
+                                                        onPress = { () => {
+                                                            setFieldValue('paymentMethod','Debito')
+                                                        }}
+                                                    />
+                                                </View>
                                             </View>
-                                        </View>
-                                    </Box>
-                                    <Box marginTop = "large">
-                                        <Switch 
-                                            align="left" 
-                                            label="Deja magnetico" 
-                                            palette="primary"
-                                            checked={values.hasMagnetic}
-                                            onChange={(e) => {
-                                                setFieldValue('hasMagnetic',!values.hasMagnetic);
-                                            }}
+                                        </Box>
+                                        <Box marginTop = "large">
+                                            <Switch 
+                                                align="left" 
+                                                label="Deja magnetico" 
+                                                palette="primary"
+                                                checked={values.hasMagnetic}
+                                                onChange={(e) => {
+                                                    setFieldValue('hasMagnetic',!values.hasMagnetic);
+                                                }}
+                                            />
+                                        </Box>
+                                        <TextField
+                                            name = "valueWithIva"
+                                            keyboardType = "numeric"
+                                            label = "Valor con IVA"
                                         />
-                                    </Box>
-                                    <TextField
-                                        name = "valueWithIva"
-                                        keyboardType = "numeric"
-                                        label = "Valor con IVA"
-                                    />
-                                    <TextareaField 
-                                        name = "description"
-                                        placeholder = "Descripcion"
-                                    />
-                                    <Box marginTop = "large">
-                                        <Switch 
-                                            label="¿Tiene factura de gastos?" 
-                                            align="left" 
-                                            palette="primary"
-                                            checked={values.hasBilling}
-                                            onChange={(e) => {
-                                                setFieldValue('hasBilling',!values.hasBilling);
-                                            }}
+                                        <TextareaField 
+                                            name = "description"
+                                            placeholder = "Descripcion"
                                         />
-                                    </Box>
-                                    {values.hasBilling && (
-                                        <Stack>
-                                            <Box marginBottom = "large">
-                                                <CalendarPickerField 
-                                                    name = "bill.date"
+                                        <Box marginTop = "large">
+                                            <Switch 
+                                                label="¿Tiene factura de gastos?" 
+                                                align="left" 
+                                                palette="primary"
+                                                checked={values.hasBilling}
+                                                onChange={(e) => {
+                                                    setFieldValue('hasBilling',!values.hasBilling);
+                                                }}
+                                            />
+                                        </Box>
+                                        {values.hasBilling && (
+                                            <Stack>
+                                                <Box marginBottom = "large">
+                                                    <CalendarPickerField 
+                                                        name = "bill.date"
+                                                    />
+                                                </Box>
+                                                <TextField 
+                                                    label = "RUT"
+                                                    name = "bill.rut"
                                                 />
-                                            </Box>
-                                            <TextField 
-                                                label = "RUT"
-                                                name = "bill.rut"
-                                            />
-                                            <TextField
-                                                label = "Numero de factura"
-                                                name = "bill.number"
-                                            />
-                                            <TextField 
-                                                label = "Valor"
-                                                name = "bill.value"
-                                            />
-                                        </Stack>
-                                    )}
-                                    <Button palette = "primary" onPress = {() => {
-                                        handleSubmit();
-                                    }}>
-                                        Agregar reporte
-                                    </Button>
-                                </Stack>
-                            </View>
-                        );
-                    }}
-                </Formik>
-            </ScrollView>
+                                                <TextField
+                                                    label = "Numero de factura"
+                                                    name = "bill.number"
+                                                />
+                                                <TextField 
+                                                    label = "Valor"
+                                                    name = "bill.value"
+                                                />
+                                            </Stack>
+                                        )}
+                                        <Button palette = "primary" onPress = {() => {
+                                            handleSubmit();
+                                        }}>
+                                            Agregar reporte
+                                        </Button>
+                                    </Stack>
+                                </View>
+                            );
+                        }}
+                    </Formik>
+                </ScrollView>
+            </SafeAreaView>
         </LoaderManager>
     )
 };

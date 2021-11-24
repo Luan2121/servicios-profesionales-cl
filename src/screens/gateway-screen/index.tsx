@@ -1,5 +1,5 @@
 import React , { Fragment, useEffect, useRef, useState } from  'react';
-import { Dimensions, View, StatusBar, Text } from 'react-native';
+import { Dimensions, View, StatusBar, Text, SafeAreaView } from 'react-native';
 import { Box, Stack, Button } from 'bumbag-native';
 import { WebView } from 'react-native-webview';
 import { RouteProp } from '@react-navigation/native';
@@ -73,69 +73,71 @@ const GatewayScreen = ({
     return (
         <Fragment>
             <StatusBar/>
-            <LoaderManager isLoading = { isVerifyingStatus || isCreatingOrder }>
-                <View style = {{
-                    flex: 1,
-                    height: '100%',
-                    width: '100%'
-                }}>
-                    { ( canShowWbpay && !orderPaid ) && (
-                        <WebView
-                            ref = {webview}
-                            style = {{
-                                height: Dimensions.get('screen').height,
-                                width: Dimensions.get('screen').width
-                            }}
-                            originWhitelist={['*']}
-                            javaScriptEnabled = {true}
-                            javaScriptCanOpenWindowsAutomatically = {true}
-                            source={{ html: createFormTemplate(webpay.token,webpay.url) }}
-                            onNavigationStateChange = {(newState) => {
-                                if(newState.title === "Transbank SDK Nodejs"){
-                                    setOrderPaid(true);
-                                }
-                            }}
-                        />
-                    )}
-                    {( orderPaid && !isVerifyingStatus && !isCreatingOrder ) && (
-                        <View style = {{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                            <View>
-                                <Stack>
-                                    <Box>
+            <SafeAreaView style = {{ flex: 1 }}>
+                <LoaderManager isLoading = { isVerifyingStatus || isCreatingOrder }>
+                    <View style = {{
+                        flex: 1,
+                        height: '100%',
+                        width: '100%'
+                    }}>
+                        { ( canShowWbpay && !orderPaid ) && (
+                            <WebView
+                                ref = {webview}
+                                style = {{
+                                    height: Dimensions.get('screen').height,
+                                    width: Dimensions.get('screen').width
+                                }}
+                                originWhitelist={['*']}
+                                javaScriptEnabled = {true}
+                                javaScriptCanOpenWindowsAutomatically = {true}
+                                source={{ html: createFormTemplate(webpay.token,webpay.url) }}
+                                onNavigationStateChange = {(newState) => {
+                                    if(newState.title === "Transbank SDK Nodejs"){
+                                        setOrderPaid(true);
+                                    }
+                                }}
+                            />
+                        )}
+                        {( orderPaid && !isVerifyingStatus && !isCreatingOrder ) && (
+                            <View style = {{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <View>
+                                    <Stack>
+                                        <Box>
 
-                                    </Box>
-                                    <Box>
-                                        <Text style = {{
-                                            textAlign: 'center',
-                                            fontSize: 24,
-                                            fontWeight: 'bold'
-                                        }}>
-                                            Tu orden ha sido creada
-                                        </Text>
-                                        <Text style = {{
-                                            textAlign: 'center',
-                                            color: theme.palette.muted
-                                        }}>
-                                            Nos estaremos contactando con usted
-                                        </Text>
-                                    </Box>
-                                    <Box>
-                                        <Button palette = "primary" onPress = { () => {
-                                            navigation.navigate("tabs");
-                                        }}>
-                                            Volver al inicio
-                                        </Button>
-                                    </Box>
-                                </Stack>
+                                        </Box>
+                                        <Box>
+                                            <Text style = {{
+                                                textAlign: 'center',
+                                                fontSize: 24,
+                                                fontWeight: 'bold'
+                                            }}>
+                                                Tu orden ha sido creada
+                                            </Text>
+                                            <Text style = {{
+                                                textAlign: 'center',
+                                                color: theme.palette.muted
+                                            }}>
+                                                Nos estaremos contactando con usted
+                                            </Text>
+                                        </Box>
+                                        <Box>
+                                            <Button palette = "primary" onPress = { () => {
+                                                navigation.navigate("tabs");
+                                            }}>
+                                                Volver al inicio
+                                            </Button>
+                                        </Box>
+                                    </Stack>
+                                </View>
                             </View>
-                        </View>
-                    )}
-                </View>
-            </LoaderManager>
+                        )}
+                    </View>
+                </LoaderManager>
+            </SafeAreaView>
         </Fragment>
     )
 }

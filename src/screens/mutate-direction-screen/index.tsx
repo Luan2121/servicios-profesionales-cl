@@ -1,9 +1,8 @@
 import { Header } from '@components/header/header';
-import { Search } from '@components/search/search';
 import { AccountNavigatorParamList } from '@navigators/account-navigator/account-navigator';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { Fragment } from 'react';
-import { View } from 'react-native';
+import { View, SafeAreaView } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Stack, Box, Button } from 'bumbag-native';
 import { Formik } from 'formik';
@@ -32,7 +31,7 @@ const MutateDirectionScreen = ({
     const { mutateAsync : mutateDirection, isLoading } = useMutateDirection();
     const { user } = useAuth();
     return (
-        <Fragment>
+        <SafeAreaView style = {{ flex: 1 }}>
             <Header 
                 title = "Nueva direccion"
                 variant = "stack"
@@ -118,7 +117,7 @@ const MutateDirectionScreen = ({
                     </ScrollView>
                 )}
             </Formik>
-        </Fragment>
+        </SafeAreaView>
     );
 }
 

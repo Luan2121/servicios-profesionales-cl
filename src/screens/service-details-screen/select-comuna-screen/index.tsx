@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { AuthNavigatorParamList } from '@navigators/auth-navigator/auth-navigator';
 import { useTheme } from 'bumbag';
@@ -34,7 +34,7 @@ const SelectComunaScreen = ({
     } , [selection]);
 
     return (
-        <Fragment>
+        <SafeAreaView style = {{ flex: 1 }}>
             <Header
                 title = "Seleccionar Comuna"
                 navigation = {navigation}
@@ -66,7 +66,7 @@ const SelectComunaScreen = ({
                     </Menu.OptionGroup>
                 </Menu>
             </ScrollView>
-        </Fragment>
+        </SafeAreaView>
     )
 }
 
