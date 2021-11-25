@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from 'react';
 import { AuthNavigatorParamList } from '@navigators/auth-navigator/auth-navigator';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { ImageBackground, StatusBar, View, Image, TouchableOpacity, Alert as RAlert } from 'react-native';
+import { ImageBackground, StatusBar, View, Image, TouchableOpacity, Alert as RAlert, SafeAreaView } from 'react-native';
 import { Box, Stack, Button, Text } from 'bumbag-native';
 import { useTheme } from 'bumbag';
 import { Assets } from '@assets';
@@ -52,78 +52,80 @@ const LoginScreen = ({ navigation } : Props ) => {
                 }}
             >
                 {({ handleSubmit, isValid }) => (
-                    <LoaderManager isLoading = {isLoading}>
-                        <Box style = {{
-                            flex: 1,
-                            backgroundColor: theme.palette.secondary
-                        }}>
-                            <ImageBackground 
-                                source = {Assets.images.bg1} 
-                                style = {{ width: '100%' , height: '100%', justifyContent: 'flex-end' }}
-                                resizeMode="cover" 
-                            >
-                                <View>
-                                    <Image
-                                        style = {{
-                                            alignSelf: 'center',
-                                            marginVertical: theme.spacing.medium
-                                        }}
-                                        source = {Assets.images.fullLogo}
-                                        width = {120}
-                                        height = {30}
-                                    />
-                                </View>
-                                <View style = {{
-                                    height: '90%',
-                                    backgroundColor: theme.palette.body,
-                                    borderTopEndRadius: 16,
-                                    borderTopStartRadius: 16,
-                                    padding: theme.spacing.xxlarge,
-                                    justifyContent: 'space-between'
-                                }}>
-                                    <Stack spacing="xlarge">
-                                        <TextField name = "email" size = "medium" placeholder = "Correo electronico"/>
-                                        <TextField secureTextEntry = {true} name = "password" size = "medium" placeholder = "Contraseña" />
-                                    </Stack>
-                                    <Stack spacing = "xlarge">
-                                        <Button disabled = {!isValid} onPress = {() => { 
-                                            handleSubmit();
-                                        }} palette = "secondary">
-                                            <Button.Text color = {theme.palette.body}>
-                                                Ingresa
-                                            </Button.Text>
-                                        </Button>
-                                        { userType === "client" && (
-                                            <Fragment>
-                                                <Text color="muted" textAlign="center"> 
-                                                    o 
-                                                </Text>
-                                                <View style = {{
-                                                    flexDirection: 'row',
-                                                    justifyContent: 'center'
-                                                }}>
-                                                    <Text color="muted" textAlign="center">
-                                                        ¿Aun no tienes cuenta?
+                    <SafeAreaView style = {{ flex: 1 }}>
+                        <LoaderManager isLoading = {isLoading}>
+                            <Box style = {{
+                                flex: 1,
+                                backgroundColor: theme.palette.secondary
+                            }}>
+                                <ImageBackground 
+                                    source = {Assets.images.bg1} 
+                                    style = {{ width: '100%' , height: '100%', justifyContent: 'flex-end' }}
+                                    resizeMode="cover" 
+                                >
+                                    <View>
+                                        <Image
+                                            style = {{
+                                                alignSelf: 'center',
+                                                marginVertical: theme.spacing.medium
+                                            }}
+                                            source = {Assets.images.fullLogo}
+                                            width = {120}
+                                            height = {30}
+                                        />
+                                    </View>
+                                    <View style = {{
+                                        height: '90%',
+                                        backgroundColor: theme.palette.body,
+                                        borderTopEndRadius: 16,
+                                        borderTopStartRadius: 16,
+                                        padding: theme.spacing.xxlarge,
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <Stack spacing="xlarge">
+                                            <TextField name = "email" size = "medium" placeholder = "Correo electronico"/>
+                                            <TextField secureTextEntry = {true} name = "password" size = "medium" placeholder = "Contraseña" />
+                                        </Stack>
+                                        <Stack spacing = "xlarge">
+                                            <Button disabled = {!isValid} onPress = {() => { 
+                                                handleSubmit();
+                                            }} palette = "secondary">
+                                                <Button.Text color = {theme.palette.body}>
+                                                    Ingresa
+                                                </Button.Text>
+                                            </Button>
+                                            { userType === "client" && (
+                                                <Fragment>
+                                                    <Text color="muted" textAlign="center"> 
+                                                        o 
                                                     </Text>
-                                                    <TouchableOpacity 
-                                                        activeOpacity={0.8} 
-                                                        onPress = {() => { navigation.navigate("sign-up-screen") }}
-                                                        style = {{
-                                                            marginLeft: theme.spacing.small
-                                                        }}
-                                                    >
-                                                        <Text color="secondary"> 
-                                                            Registrate 
+                                                    <View style = {{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center'
+                                                    }}>
+                                                        <Text color="muted" textAlign="center">
+                                                            ¿Aun no tienes cuenta?
                                                         </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </Fragment>
-                                        )}
-                                    </Stack>
-                                </View>
-                            </ImageBackground>
-                        </Box>
-                    </LoaderManager>
+                                                        <TouchableOpacity 
+                                                            activeOpacity={0.8} 
+                                                            onPress = {() => { navigation.navigate("sign-up-screen") }}
+                                                            style = {{
+                                                                marginLeft: theme.spacing.small
+                                                            }}
+                                                        >
+                                                            <Text color="secondary"> 
+                                                                Registrate 
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </View>
+                                                </Fragment>
+                                            )}
+                                        </Stack>
+                                    </View>
+                                </ImageBackground>
+                            </Box>
+                        </LoaderManager>
+                    </SafeAreaView>
                 )}
             </Formik>
         </Fragment>
