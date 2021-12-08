@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { StatusBar, View, Text, FlatList, SafeAreaView } from 'react-native';
 import { useTheme } from 'bumbag';
-import { ClientNavigatorTab } from '@navigators/client-navigator/client-navigator';
+import { ClientNavigatorStack, ClientNavigatorTab } from '@navigators/client-navigator/client-navigator';
 // Components
 import { Box, Input, Stack } from 'bumbag-native';
 import { Header } from '@components/header/header';
@@ -9,16 +9,17 @@ import { ServiceCard } from '@components/service-card/service-card';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useServices } from '@hooks/models/use-service';
 import { useAuth } from '@hooks/use-auth';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useSearch } from '@hooks/use-search';
+import { Alert } from '@components/alerts/alerts';
 
-type ServiceDetailScreenNavigationProp = BottomTabNavigationProp<
-    ClientNavigatorTab,
+type HomeScreenNavigationProp = BottomTabNavigationProp<
+    ClientNavigatorTab & ClientNavigatorStack,
     'home'
 >
 
 type Props = {
-    navigation : ServiceDetailScreenNavigationProp
+    navigation : HomeScreenNavigationProp
 }
 
 const HomeScreen = ({ 
@@ -67,6 +68,32 @@ const HomeScreen = ({
                 <ScrollView style = {{
                     flex: 1
                 }}>
+                    { !(isGuest && user?.hasProfile) && (
+                        <View style = {{
+                            padding: theme.spacing.medium,
+                            paddingBottom: 0
+                        }}>
+                            <Alert tone = "warning" icon = "warning">
+                                <Text>
+                                    Aun no completas tu perfil
+                                </Text>
+                                <TouchableWithoutFeedback style = {{
+                                    paddingTop: 15
+                                }} onPress = {() => {
+                                    navigation.navigate("profile");
+                                }}>
+                                    <Text style = {{
+                                        color: theme.palette.warning,
+                                        textDecorationLine: "underline",
+                                        textDecorationColor: theme.palette.warning,
+                                        fontSize: 10
+                                    }}>
+                                        Presiona aqui para completar tus datos
+                                    </Text>
+                                </TouchableWithoutFeedback>
+                            </Alert>
+                        </View>
+                    )}
                     <Box padding = "medium" marginBottom = "medium">
                         <FlatList
                             data = {searchedServices.filter( service => service.isActive )}

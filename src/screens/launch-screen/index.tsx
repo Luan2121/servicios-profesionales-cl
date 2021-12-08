@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { AuthNavigatorParamList } from '@navigators/auth-navigator/auth-navigator';
-import { ImageBackground, StatusBar, Text, View, Image, SafeAreaView } from 'react-native';
+import { ImageBackground, StatusBar, Text, View, Image, SafeAreaView, Platform } from 'react-native';
 import { Box, Button , Group } from 'bumbag-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from 'bumbag';
@@ -57,54 +57,85 @@ const LaunchScreen = ({ navigation } : Props ) => {
                                     height = {30}
                                 />
                             </View>
-                            <View style = {{
-                                height: 280,
-                                width: '100%',
-                                backgroundColor: theme.palette.body,
-                                borderTopStartRadius: 16,
-                                borderTopEndRadius: 16,
-                                padding: theme.spacing.large,
-                                justifyContent: 'space-between'
-                            }}>
-                                <Text style = {{
-                                    fontWeight: 'bold',
-                                    fontSize: 28
-                                }}>
-                                    { COPY["title"] }
-                                </Text>
-                                <Group width = "100%">
-                                    <Button onPress = { () => { 
-                                        setUserType("client");
-                                        navigation.navigate("login-screen");
-                                    } } palette = "secondary" flex = {1} width = "50%">
-                                        <Button.Text color={theme.palette.body}>
-                                            { COPY["iam-client"]}
-                                        </Button.Text>
-                                    </Button>
-                                    <Button onPress = { () => { 
-                                        setUserType("technician");
-                                        navigation.navigate("login-screen");
-                                    } } palette = "secondary" flex = {1} width ="50%">
-                                        <Button.Text color={theme.palette.body}>
-                                            { COPY["iam-technician"] }
-                                        </Button.Text>
-                                    </Button>
-                                </Group>
-                                <Text style = {{
-                                    color: theme.palette.muted,
-                                    fontSize: 14,
-                                    textAlign: 'center'
-                                }}>
-                                    o
-                                </Text>
-                                <Button variant = "ghost" onPress = {() => {
-                                    loginAsGuest();
-                                }}>
-                                    <Button.Text>
-                                        Entrar como invitado
-                                    </Button.Text>
-                                </Button>
-                            </View>
+                            { (Platform.OS === 'android') 
+                                ? (
+                                    <View style = {{
+                                        height: 280,
+                                        width: '100%',
+                                        backgroundColor: theme.palette.body,
+                                        borderTopStartRadius: 16,
+                                        borderTopEndRadius: 16,
+                                        padding: theme.spacing.large,
+                                        justifyContent: 'space-between'
+                                    }}>
+                                        <Text style = {{
+                                            fontWeight: 'bold',
+                                            fontSize: 28
+                                        }}>
+                                            { COPY["title"] }
+                                        </Text>
+                                        <Group width = "100%">
+                                            <Button onPress = { () => { 
+                                                setUserType("client");
+                                                navigation.navigate("login-screen");
+                                            } } palette = "secondary" flex = {1} width = "50%">
+                                                <Button.Text color={theme.palette.body}>
+                                                    { COPY["iam-client"]}
+                                                </Button.Text>
+                                            </Button>
+                                            <Button onPress = { () => { 
+                                                setUserType("technician");
+                                                navigation.navigate("login-screen");
+                                            } } palette = "secondary" flex = {1} width ="50%">
+                                                <Button.Text color={theme.palette.body}>
+                                                    { COPY["iam-technician"] }
+                                                </Button.Text>
+                                            </Button>
+                                        </Group>
+                                        <Text style = {{
+                                            color: theme.palette.muted,
+                                            fontSize: 14,
+                                            textAlign: 'center'
+                                        }}>
+                                            o
+                                        </Text>
+                                        <Button variant = "ghost" onPress = {() => {
+                                            loginAsGuest();
+                                        }}>
+                                            <Button.Text>
+                                                Entrar como invitado
+                                            </Button.Text>
+                                        </Button>
+                                    </View>
+                                ) : (
+                                    <View style = {{
+                                        height: 280,
+                                        width: '100%',
+                                        backgroundColor: theme.palette.body,
+                                        borderTopStartRadius: 16,
+                                        borderTopEndRadius: 16,
+                                        padding: theme.spacing.large
+                                    }}>
+                                        <Text style = {{
+                                            fontWeight: 'bold',
+                                            fontSize: 28
+                                        }}>
+                                            { COPY["title"] }
+                                        </Text>
+                                        <Button style = {{
+                                            marginTop: theme.spacing.xxlarge
+                                        }} onPress = { () => { 
+                                            setUserType("technician");
+                                            navigation.navigate("login-screen");
+                                        } } palette = "secondary" flex = {1}>
+                                            <Button.Text color={theme.palette.body}>
+                                                Entrar como tecnico
+                                            </Button.Text>
+                                        </Button>
+                                    </View>
+                                )
+                            }
+                            
                         </ImageBackground>
                     </ImageBackground>
                 </Box>
